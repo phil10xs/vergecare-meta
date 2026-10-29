@@ -2,7 +2,7 @@
 
 Property check-ins for the Meta AI Global Hackathon (indie track),
 powered by the VergeSnag AI engine. Check in on your property, get an
-organized snag list & tracker board in under a minute — every visit
+organized Issues snag list & Issues & Bill Tracker board in under a minute — every visit
 remembered forever.
 
 Separate project from GoVerge. It reuses GoVerge's brand tokens, button
@@ -52,7 +52,7 @@ Open [http://localhost:3002](http://localhost:3002) in a browser.
 ```
 src/app            Routes: / (→ /request), /request (check-in landing),
                    /request/checkin (film + submit), /request/[id] (visit report),
-                   /track (snag list + tracker board), /b/[token] (magic-link board),
+                   /track (Issues snag list + Issues & Bill Tracker board), /b/[token] (magic-link board),
                    /api/health, /api/media
 src/components     Reused GoVerge UI: button, status badges, page header, list hero
 src/lib            Trade inference, report sections, session grouping
@@ -68,8 +68,8 @@ Check in → Visit report → Track. Landlords, owners and tenants check in a
 property from `/request`: name, contact, address, then one video per issue
 (up to 20 seconds each) narrating what they see. Each video becomes a
 session — trade detected, reference issued — grouped under its visit on the
-visit report (`/request/[id]`), with a snag list and a Meta Spark analysis
-block. The owner tracks everything on `/track` (snag list + kanban board),
+visit report (`/request/[id]`), with an Issues snag list and a Meta Spark analysis
+block. The owner tracks everything on `/track` (Issues snag list + kanban board),
 moving sessions across columns and marking payment Due/Sent. Uploads stay on
 this machine under `uploads/`.
 
@@ -117,6 +117,6 @@ pnpm dev       # http://localhost:3002
 
 1. Landlord: open `/request`, start a check-in, film one ≤20 s video per
    issue narrating what you see, send.
-2. Visit report at `/request/[id]` — sessions, snag list, Meta Spark analysis.
+2. Visit report at `/request/[id]` — sessions, Issues snag list, Meta Spark analysis.
 3. Owner board at `/track` — move sessions across the kanban, mark Due/Sent.
-4. Requester: email the tracker board link from the report, open `/b/[token]`.
+4. Requester: email the Issues & Bill Tracker board link from the report, open `/b/[token]`.

@@ -82,7 +82,7 @@ export function BoardLinkRequest({
       <Button type="submit" variant="accent" disabled={busy} className="w-full">
         {busy
           ? "Sending…"
-          : "Email my Home/Property Issues Tracker Board"}
+          : "Email my Issues & Bill Tracker board"}
       </Button>
       {error ? <ErrorText>{error}</ErrorText> : null}
     </form>

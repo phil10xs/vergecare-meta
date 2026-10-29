@@ -13,7 +13,7 @@ import { db } from "@/db";
 import { job } from "@/db/schema";
 import { asc, eq } from "drizzle-orm";
 
-export const metadata: Metadata = { title: "Tracker board" };
+export const metadata: Metadata = { title: "Issues & Bill Tracker board" };
 
 const COLUMNS = [
   { key: "requested", label: "Requested" },

@@ -143,7 +143,7 @@ export default async function PublicTrackPage({
           />
           <div className="text-sm">
             <p className="font-semibold">
-              Analysis complete — snag list ready · {reference}
+              Analysis complete — Issues snag list ready · {reference}
             </p>
             <p className="mt-0.5 text-muted-foreground">
               Your clips are analysed and every issue is listed below.
@@ -182,7 +182,7 @@ export default async function PublicTrackPage({
             aria-hidden
           />
           <span className="font-display text-base font-bold tracking-tight">
-            Snag list · {views.length}{" "}
+            Issues snag list · {views.length}{" "}
             {views.length === 1 ? "issue" : "issues"}
           </span>
         </summary>
@@ -338,14 +338,14 @@ export default async function PublicTrackPage({
       </div>
 
       <section
-        aria-label="Tracker board link"
+        aria-label="Issues &amp; Bill Tracker board link"
         className="mt-6 rounded-2xl border border-border bg-card p-4"
       >
         <h2 className="font-display text-base font-bold tracking-tight">
-          Your tracker board
+          Your Issues &amp; Bill Tracker board
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Get the private tracker-board link for this property. No account
+          Get the private Issues &amp; Bill Tracker board link for this property. No account
           needed.
         </p>
         <div className="mt-3">
