@@ -13,14 +13,13 @@ import { db } from "@/db";
 import { job } from "@/db/schema";
 import { asc, eq } from "drizzle-orm";
 
-export const metadata: Metadata = { title: "Issues & Bill Tracker board" };
+export const metadata: Metadata = { title: "Issues & Bills Tracker Board" };
 
 const COLUMNS = [
   { key: "requested", label: "Requested" },
-  { key: "planned", label: "Planned" },
   { key: "in_progress", label: "In progress" },
-  { key: "submitted", label: "Submitted" },
-  { key: "resolved", label: "Resolved" },
+  { key: "completed", label: "Completed" },
+  { key: "paid", label: "Paid" },
 ] as const;
 
 export default async function PublicBoardPage({
@@ -141,6 +140,11 @@ export default async function PublicBoardPage({
       </div>
       <p className="mt-3 text-xs text-muted-foreground">
         Read-only view — this link expires 7 days after it was sent.
+      </p>
+      <p className="mt-4 text-center text-sm">
+        <Link href="/request" className="font-semibold text-link hover:underline">
+          ← Back to check-in
+        </Link>
       </p>
     </main>
   );

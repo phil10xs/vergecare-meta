@@ -99,7 +99,7 @@ export async function generateReport(
   if (options.markSubmitted !== false) {
     await db
       .update(job)
-      .set({ status: "submitted", updatedAt: new Date() })
+      .set({ status: "completed", updatedAt: new Date() })
       .where(eq(job.id, jobId));
   }
   return report;
@@ -199,10 +199,9 @@ export async function getPublicJob(jobId: string): Promise<Job | undefined> {
 
 const DEMO_STATUSES = [
   "requested",
-  "planned",
   "in_progress",
-  "submitted",
-  "resolved",
+  "completed",
+  "paid",
   "cancelled",
 ] as const;
 
@@ -213,6 +212,18 @@ export async function setJobStatus(jobId: string, status: string): Promise<void>
   await db
     .update(job)
     .set({ status, updatedAt: new Date() })
+    .where(eq(job.id, jobId));
+}
+
+export async function markPaid(jobId: string): Promise<void> {
+  const [row] = await db.select().from(job).where(eq(job.id, jobId));
+  if (!row) throw new Error("Job not found");
+  if (row.status !== "completed") {
+    throw new Error("Only completed issues can be paid");
+  }
+  await db
+    .update(job)
+    .set({ status: "paid", paymentStatus: "sent", updatedAt: new Date() })
     .where(eq(job.id, jobId));
 }
 

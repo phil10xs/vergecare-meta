@@ -2,7 +2,7 @@
 
 Property check-ins for the Meta AI Global Hackathon (indie track),
 powered by the VergeSnag AI engine. Check in on your property, get an
-organized Issues snag list & Issues & Bill Tracker board in under a minute — every visit
+organized Issues snag list & Issues & Bills Tracker Board in under a minute — every visit
 remembered forever.
 
 Separate project from GoVerge. It reuses GoVerge's brand tokens, button
@@ -52,7 +52,7 @@ Open [http://localhost:3002](http://localhost:3002) in a browser.
 ```
 src/app            Routes: / (→ /request), /request (check-in landing),
                    /request/checkin (film + submit), /request/[id] (visit report),
-                   /track (Issues snag list + Issues & Bill Tracker board), /b/[token] (magic-link board),
+                   /track (Issues snag list + Issues & Bills Tracker Board), /b/[token] (magic-link board),
                    /api/health, /api/media
 src/components     Reused GoVerge UI: button, status badges, page header, list hero
 src/lib            Trade inference, report sections, session grouping
@@ -118,5 +118,5 @@ pnpm dev       # http://localhost:3002
 1. Landlord: open `/request`, start a check-in, film one ≤20 s video per
    issue narrating what you see, send.
 2. Visit report at `/request/[id]` — sessions, Issues snag list, Meta Spark analysis.
-3. Owner board at `/track` — move sessions across the kanban, mark Due/Sent.
-4. Requester: email the Issues & Bill Tracker board link from the report, open `/b/[token]`.
+3. Owner board at `/track` — move sessions across the kanban, mark Due/Sent, pay completed issues.
+4. Requester: email the Issues & Bills Tracker Board link from the report, open `/b/[token]`.

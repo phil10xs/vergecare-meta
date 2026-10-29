@@ -77,7 +77,7 @@ async function main() {
       {
         title: "General request — Hulme Point: snagging walk",
         siteName: "Hulme Point",
-        status: "planned",
+        status: "requested",
         priority: "medium",
         assignee: "J. Whitfield",
         source: "public",
@@ -89,7 +89,7 @@ async function main() {
       {
         title: "General request — Salford Quays: MVHR commissioning",
         siteName: "Salford Quays",
-        status: "planned",
+        status: "requested",
         priority: "medium",
         assignee: null,
         source: "public",
@@ -133,7 +133,7 @@ async function main() {
     .values({
       title: "Roofer request — 14 Rosebank Road: Slipped slate",
       siteName: address,
-      status: "submitted",
+      status: "completed",
       priority: "medium",
       assignee: "D. Okafor",
       tradesmanName: "D. Okafor",
@@ -153,7 +153,7 @@ async function main() {
     .values({
       title: "Electrician request — 14 Rosebank Road: Flickering hallway light",
       siteName: address,
-      status: "resolved",
+      status: "paid",
       priority: "medium",
       assignee: "R. Ojo",
       tradesmanName: "R. Ojo",

@@ -34,9 +34,9 @@ function sectionLabel(key: string): string {
 }
 
 function visitStatus(sessions: Job[]): string {
-  if (sessions.length > 0 && sessions.every((row) => row.status === "resolved"))
-    return "resolved";
-  const order = ["in_progress", "submitted", "planned", "requested"];
+  if (sessions.length > 0 && sessions.every((row) => row.status === "paid"))
+    return "paid";
+  const order = ["in_progress", "completed", "requested"];
   for (const status of order) {
     if (sessions.some((row) => row.status === status)) return status;
   }
@@ -188,7 +188,9 @@ export default async function PublicTrackPage({
         </summary>
         <ul className="space-y-2.5 border-t border-border px-4 py-4">
           {views.map((view, index) => {
-            const done = view.session.status === "resolved";
+            const done =
+              view.session.status === "completed" ||
+              view.session.status === "paid";
             return (
               <li key={view.session.id} className="flex items-start gap-3">
                 <span
@@ -338,14 +340,15 @@ export default async function PublicTrackPage({
       </div>
 
       <section
-        aria-label="Issues &amp; Bill Tracker board link"
+        aria-label="Issues &amp; Bills Tracker Board link"
         className="mt-6 rounded-2xl border border-border bg-card p-4"
       >
         <h2 className="font-display text-base font-bold tracking-tight">
-          Your Issues &amp; Bill Tracker board
+          Your Home/Property&apos;s Issues &amp; Bills Tracker Board
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Get the private Issues &amp; Bill Tracker board link for this property. No account
+          Get the private link for your Home/Property&apos;s Issues &amp;
+          Bills Tracker Board. No account
           needed.
         </p>
         <div className="mt-3">

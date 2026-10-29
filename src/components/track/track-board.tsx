@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { JobPaymentBadge, JobPriorityBadge } from "@/components/ui/status-badge";
 import {
+  markPaidAction,
   savePaymentDecisionAction,
   setJobStatusAction,
 } from "@/app/actions/requests";
@@ -9,10 +10,9 @@ import type { Job } from "@/db/schema";
 
 const COLUMNS = [
   { key: "requested", label: "Requested" },
-  { key: "planned", label: "Planned" },
   { key: "in_progress", label: "In progress" },
-  { key: "submitted", label: "Submitted" },
-  { key: "resolved", label: "Resolved" },
+  { key: "completed", label: "Completed" },
+  { key: "paid", label: "Paid" },
 ] as const;
 
 const ALL_STATUSES = [...COLUMNS, { key: "cancelled", label: "Cancelled" }] as const;
@@ -113,6 +113,19 @@ export function TrackBoard({ jobs }: { jobs: Job[] }) {
                         Move
                       </Button>
                     </form>
+                    {card.status === "completed" ? (
+                      <form action={markPaidAction} className="mt-2">
+                        <input type="hidden" name="jobId" value={card.id} />
+                        <Button
+                          type="submit"
+                          size="sm"
+                          variant="accent"
+                          className="w-full"
+                        >
+                          Pay Tradesman
+                        </Button>
+                      </form>
+                    ) : null}
                     {card.paymentStatus === "sent" ? null : (
                       <form
                         action={savePaymentDecisionAction}
@@ -169,6 +182,11 @@ export function TrackBoard({ jobs }: { jobs: Job[] }) {
           {[...new Set(parked.map((entry) => entry.status))].join(", ")}).
         </p>
       ) : null}
+      <p className="mt-4 text-center text-sm">
+        <Link href="/request" className="font-semibold text-link hover:underline">
+          ← Back to check-in
+        </Link>
+      </p>
     </>
   );
 }

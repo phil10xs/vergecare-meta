@@ -8,6 +8,7 @@ import {
   applyInference,
   createPublicRequest,
   generateReport,
+  markPaid,
   markPaymentDue,
   recordPayment,
   saveTranscript,
@@ -139,4 +140,12 @@ export async function savePaymentDecisionAction(
     await markPaymentDue(jobId, raw ? Math.round(Number(raw) * 100) : null);
   }
   revalidatePath("/track");
+}
+
+export async function markPaidAction(formData: FormData): Promise<void> {
+  const jobId = formText(formData, "jobId");
+  if (!jobId) throw new Error("Job is required");
+  await markPaid(jobId);
+  revalidatePath("/track");
+  redirect("/track?view=board&paid=1");
 }
