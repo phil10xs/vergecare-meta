@@ -5,6 +5,7 @@ import {
   JobPaymentBadge,
   JobStatusBadge,
 } from "@/components/ui/status-badge";
+import { ReportCelebration } from "@/components/request/report-celebration";
 import { BoardLinkRequest } from "@/components/request/board-link-request";
 import { REPORT_SECTIONS } from "@/lib/checklist-template";
 import {
@@ -133,6 +134,7 @@ export default async function PublicTrackPage({
 
   return (
     <main className="mx-auto w-full max-w-2xl px-[var(--app-gutter)] py-8">
+      <ReportCelebration active={fresh === "1"} />
       {fresh === "1" ? (
         <div className="mb-6 flex items-start gap-3 rounded-2xl border border-border bg-card p-4">
           <CheckCircle2
@@ -141,11 +143,11 @@ export default async function PublicTrackPage({
           />
           <div className="text-sm">
             <p className="font-semibold">
-              Check-in received — reference {reference}
+              Analysis complete — snag list ready · {reference}
             </p>
             <p className="mt-0.5 text-muted-foreground">
-              Bookmark this page — it is your private receipt. The trade team
-              reviews every check-in in turn, urgent issues first.
+              Your clips are analysed and every issue is listed below.
+              Bookmark this page — it is your private receipt.
             </p>
           </div>
         </div>
