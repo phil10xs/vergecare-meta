@@ -15,15 +15,15 @@ export const metadata: Metadata = { title: "Track" };
 export default async function TrackPage({
   searchParams,
 }: {
-  searchParams: Promise<{ view?: string; paid?: string }>;
+  searchParams: Promise<{ view?: string; paid?: string; celebrate?: string }>;
 }) {
-  const { view, paid } = await searchParams;
+  const { view, paid, celebrate } = await searchParams;
   const current = view === "list" ? "list" : "board";
   const jobs = await db.select().from(job).orderBy(asc(job.createdAt));
 
   return (
     <main className="mx-auto w-full max-w-[var(--app-page-max)] px-[var(--app-gutter)] py-8">
-      <ReportCelebration active={paid === "1"} />
+      <ReportCelebration active={paid === "1" || celebrate === "1"} />
       <ListHero
         title="Track"
         description="Every property's visits and sessions — as an Issues snag list or your Home/Property's Issues & Bills Tracker Board."
@@ -44,6 +44,21 @@ export default async function TrackPage({
             <p className="font-semibold">Your payment has been confirmed.</p>
             <p className="mt-0.5 text-muted-foreground">
               The issue now shows as Paid on the board.
+            </p>
+          </div>
+        </div>
+      ) : null}
+
+      {celebrate === "1" ? (
+        <div className="mb-4 flex items-start gap-3 rounded-2xl border border-border bg-card p-4">
+          <CheckCircle2
+            className="mt-0.5 h-5 w-5 shrink-0 text-[var(--gv-teal-bright)]"
+            aria-hidden
+          />
+          <div className="text-sm">
+            <p className="font-semibold">Issue moved to Completed.</p>
+            <p className="mt-0.5 text-muted-foreground">
+              One more fix off the list.
             </p>
           </div>
         </div>

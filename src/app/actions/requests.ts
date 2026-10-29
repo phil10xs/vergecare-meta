@@ -111,6 +111,9 @@ export async function setJobStatusAction(
   if (!jobId || !status) throw new Error("Job and status are required");
   await setJobStatus(jobId, status);
   revalidatePath("/track");
+  if (status === "completed") {
+    redirect("/track?view=board&celebrate=1");
+  }
 }
 
 export async function requestBoardLinkAction(
