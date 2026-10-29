@@ -1,0 +1,59 @@
+# VergeSnag production stack for a single EC2 box (internal branch only).
+# Secrets come from deploy/.secrets/app.env (gitignored) copied to ~/.env on the box.
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: vergefield
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d vergefield"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL}
+    image: vergesnag-app:latest
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/vergefield
+      META_MODEL_API_KEY: ${META_MODEL_API_KEY:-}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL}
+    volumes:
+      - uploads:/app/uploads
+    expose:
+      - "3002"
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddydata:/data
+      - caddyconfig:/config
+    environment:
+      DOMAIN: ${DOMAIN:-}
+      APP_HOST: app:3002
+
+volumes:
+  pgdata:
+  uploads:
+  caddydata:
+  caddyconfig:

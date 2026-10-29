@@ -1,0 +1,6 @@
+# VergeSnag gateway. DOMAIN is injected from the box .env; with no domain
+# Caddy serves plain HTTP on the Elastic IP (fine for a demo, no warning
+# pages). Point a domain at the IP and Caddy provisions HTTPS automatically.
+{$DOMAIN:*} {
+	reverse_proxy {$APP_HOST:app:3002}
+}
