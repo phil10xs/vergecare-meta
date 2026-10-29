@@ -1,7 +1,7 @@
 # VergeSnag live deploy (internal branch only)
 
 Single EC2 box runs Docker Compose: Postgres + Next.js app + Caddy.
-Same IAM user and pattern as GoVerge (`docs/aws-deploy.md` there), smaller
+Same IAM user and deploy pattern already in use, smaller
 script: `scripts/aws-deploy.sh`.
 
 ```
@@ -13,7 +13,7 @@ This whole `deploy/` tree plus `Dockerfile` exists only on the local
 
 ## Prereqs (one-time)
 
-- AWS CLI configured (same creds as GoVerge). Verify: `aws sts get-caller-identity`
+- AWS CLI configured (existing AWS creds). Verify: `aws sts get-caller-identity`
 - Docker Desktop running (for the fast local-build path)
 - Meta key in `.env.local` as `META_MODEL_API_KEY` (copied into the box env)
 

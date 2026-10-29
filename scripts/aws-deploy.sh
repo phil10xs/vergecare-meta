@@ -1,7 +1,7 @@
 #!/bin/bash
 # VergeSnag live deploy: single EC2 + Docker Compose (app + Postgres + Caddy).
 # Run from the repo root on the internal-VergeSnag branch. Reuses the same
-# AWS CLI credentials as GoVerge (aws sts get-caller-identity to verify).
+# AWS CLI credentials (verify with aws sts get-caller-identity).
 #
 #   ./scripts/aws-deploy.sh
 #   DOMAIN=snag.example.com ./scripts/aws-deploy.sh   # HTTPS via Caddy
