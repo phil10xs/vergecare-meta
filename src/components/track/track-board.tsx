@@ -80,6 +80,7 @@ export function TrackBoard({ jobs }: { jobs: Job[] }) {
                       <div className="flex items-center justify-between gap-2">
                         <dt className="text-muted-foreground">
                           {card.tradesmanTrade ?? "Trade detecting…"}
+                          {card.costBand ? ` · likely ${card.costBand}` : ""}
                         </dt>
                         <dd className="truncate font-semibold">
                           {card.tradesmanName ?? card.assignee ?? "Unassigned"}

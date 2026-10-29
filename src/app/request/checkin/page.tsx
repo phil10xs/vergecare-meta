@@ -92,6 +92,22 @@ export default function CheckinPage() {
               <option value="urgent">Urgent</option>
             </select>
           </label>
+          <label className="block">
+            <span className="mb-1 block text-sm font-semibold">
+              What trade do you need?
+            </span>
+            <select
+              name="trade"
+              className={`${inputClass} cursor-not-allowed opacity-70`}
+              defaultValue="auto"
+              disabled
+            >
+              <option value="auto">Auto-detect from my videos</option>
+            </select>
+            <span className="mt-1 block text-xs text-muted-foreground">
+              Manual trade picker coming soon — auto-detect is on for now.
+            </span>
+          </label>
         </div>
         <fieldset>
           <legend className="mb-1 px-1 text-sm font-semibold">

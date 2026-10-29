@@ -16,6 +16,8 @@ export const job = pgTable("job", {
   assignee: text("assignee"),
   tradesmanName: text("tradesman_name"),
   tradesmanTrade: text("tradesman_trade"),
+  severity: text("severity"),
+  costBand: text("cost_band"),
   source: text("source").notNull().default("internal"),
   requesterName: text("requester_name"),
   requesterContact: text("requester_contact"),
@@ -59,6 +61,7 @@ export const siteMedia = pgTable("site_media", {
   narration: text("narration"),
   transcript: text("transcript"),
   visualDescription: text("visual_description"),
+  detectedTrade: text("detected_trade"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

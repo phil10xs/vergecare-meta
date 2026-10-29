@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Check, CheckCircle2, ChevronDown } from "lucide-react";
 import {
   JobPaymentBadge,
+  JobSeverityBadge,
   JobStatusBadge,
 } from "@/components/ui/status-badge";
 import { ReportCelebration } from "@/components/request/report-celebration";
@@ -11,11 +12,13 @@ import { REPORT_SECTIONS } from "@/lib/checklist-template";
 import {
   condenseTranscript,
   excerptWords,
+  formatBudget,
   formatVisitDay,
   inferIssue,
   nameIssue,
   selectVisitSessions,
   sessionAddress,
+  sumCostBands,
   visitDayOf,
 } from "@/lib/sessions";
 import {
@@ -132,6 +135,8 @@ export default async function PublicTrackPage({
     };
   });
 
+  const budget = sumCostBands(sessions.map((entry) => entry.costBand));
+
   return (
     <main className="mx-auto w-full max-w-2xl px-[var(--app-gutter)] py-8">
       <ReportCelebration active={fresh === "1"} />
@@ -164,6 +169,7 @@ export default async function PublicTrackPage({
         <span className="text-sm text-muted-foreground">
           {formatVisitDay(day)} · {sessions.length}{" "}
           {sessions.length === 1 ? "issue" : "issues"}
+          {budget ? ` · budget ${formatBudget(budget)}` : ""}
         </span>
       </div>
       {anchor.businessName ? (
@@ -215,6 +221,9 @@ export default async function PublicTrackPage({
                   <span className="mt-0.5 block text-xs text-muted-foreground">
                     {view.session.tradesmanTrade ?? "Trade detecting…"} ·{" "}
                     {view.session.status.replace(/_/g, " ")}
+                    {view.session.costBand
+                      ? ` · likely ${view.session.costBand}`
+                      : ""}
                   </span>
                 </span>
               </li>
@@ -266,6 +275,20 @@ export default async function PublicTrackPage({
                     {view.name}
                   </dd>
                 </div>
+                {view.session.severity ? (
+                  <div className="flex items-center gap-2">
+                    <dt className="shrink-0 font-semibold">Severity:</dt>
+                    <dd>
+                      <JobSeverityBadge severity={view.session.severity} />
+                    </dd>
+                  </div>
+                ) : null}
+                {view.session.costBand ? (
+                  <div className="flex gap-2">
+                    <dt className="shrink-0 font-semibold">Likely cost:</dt>
+                    <dd>{view.session.costBand}</dd>
+                  </div>
+                ) : null}
                 {view.heard.length > 0 ? (
                   <div className="flex gap-2">
                     <dt className="shrink-0 font-semibold">Heard:</dt>

@@ -3,7 +3,8 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db";
-import { siteMedia } from "@/db/schema";
+import { job, siteMedia } from "@/db/schema";
+import { eq } from "drizzle-orm";
 import {
   applyInference,
   createPublicRequest,
@@ -11,12 +12,13 @@ import {
   markPaid,
   markPaymentDue,
   recordPayment,
-  saveTranscript,
+  saveVideoAnalysis,
   setJobStatus,
 } from "@/server/reporting";
 import { requestBoardLink } from "@/server/board-access";
 import { groupFilesBySession } from "@/lib/media-rules";
-import { analyzeVideo } from "@/server/analyze-video";
+import { TRADE_OPTIONS } from "@/lib/chat-parse";
+import { analyzeVideo, assessIssue } from "@/server/analyze-video";
 import { saveUpload } from "@/server/media-store";
 
 function formText(formData: FormData, key: string): string | null {
@@ -46,7 +48,26 @@ async function saveMediaFiles(
     if (row && saved.kind === "video") {
       const analysis = await analyzeVideo(bytes, file.type);
       if (analysis) {
-        await saveTranscript(row.id, analysis.transcript, analysis.description);
+        await saveVideoAnalysis(
+          row.id,
+          analysis.transcript,
+          analysis.description,
+          analysis.trade,
+        );
+        const assessment = await assessIssue(
+          analysis.transcript,
+          analysis.description,
+        );
+        if (assessment) {
+          await db
+            .update(job)
+            .set({
+              severity: assessment.severity,
+              costBand: assessment.costBand,
+              updatedAt: new Date(),
+            })
+            .where(eq(job.id, jobId));
+        }
       }
     }
   }
@@ -78,6 +99,13 @@ export async function createPublicRequestAction(
   }
   const priority: "low" | "medium" | "high" =
     formText(formData, "urgency") === "urgent" ? "high" : "medium";
+  const pickedTrade = formText(formData, "trade");
+  const hintedTrade =
+    pickedTrade &&
+    (TRADE_OPTIONS as readonly string[]).includes(pickedTrade) &&
+    pickedTrade !== "Other"
+      ? pickedTrade
+      : null;
   const groups = groupFilesBySession(files);
   const base = {
     requesterName,
@@ -91,12 +119,12 @@ export async function createPublicRequestAction(
     description: note ?? "See photos and video.",
   });
   await saveMediaFiles(created.id, groups[0] ?? [], null);
-  await applyInference(created.id);
+  await applyInference(created.id, hintedTrade);
   await generateReport(created.id, requesterName, { markSubmitted: false });
   for (const group of groups.slice(1)) {
     const sibling = await createPublicRequest({ ...base, description: "" });
     await saveMediaFiles(sibling.id, group, null);
-    await applyInference(sibling.id);
+    await applyInference(sibling.id, hintedTrade);
     await generateReport(sibling.id, requesterName, { markSubmitted: false });
   }
   revalidatePath("/track");
