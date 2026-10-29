@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { requestBoardLinkAction } from "@/app/actions/jobs";
+import { requestBoardLinkAction } from "@/app/actions/requests";
 import { Button } from "@/components/ui/button";
 import { ErrorText } from "@/components/layout/page-header";
 import { isValidEmail } from "@/lib/board-token";

@@ -4,7 +4,7 @@ import { JobPaymentBadge, JobPriorityBadge } from "@/components/ui/status-badge"
 import {
   savePaymentDecisionAction,
   setJobStatusAction,
-} from "@/app/actions/jobs";
+} from "@/app/actions/requests";
 import type { Job } from "@/db/schema";
 
 const COLUMNS = [
