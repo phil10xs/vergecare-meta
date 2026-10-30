@@ -13,7 +13,6 @@ export const metadata: Metadata = {
 const AUDIENCE = [
   "Landlords",
   "Homeowners",
-  "Tenants",
   "Property/Facility Managers",
 ] as const;
 
@@ -88,15 +87,15 @@ export default function PublicRequestPage() {
             <div className="relative z-10 w-full min-w-0 px-5 py-8 sm:absolute sm:inset-y-0 sm:left-0 sm:flex sm:w-[56%] sm:items-center sm:px-10 sm:py-10 lg:w-[50%] lg:px-14">
               <div className="min-w-0">
               <h1 className="max-w-3xl font-display text-[1.85rem] font-semibold leading-[1.08] tracking-[-0.045em] text-white sm:text-[2.35rem] lg:text-[3rem] lg:leading-[1.06] xl:text-[3.4rem]">
-                Your Property Care Re-Imagined.
+                Every visit, remembered.
               </h1>
               <p className="mt-4 max-w-2xl font-display text-lg font-bold leading-snug tracking-[-0.03em] text-white sm:text-xl lg:text-[1.65rem]">
-                Capture the issues. Track the bills. Once you check in your
-                property.
+                Film the issue. Track the bill. All from one check-in.
               </p>
               <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/85 sm:text-base">
-                Damp walls, leaky pipes, weedy gardens on big households &amp;
-                multiple properties.
+                Damp walls, leaky pipes, weedy gardens — across one home or a
+                whole portfolio. Tenants film what they see; you track every
+                fix to done.
               </p>
               <Link
                 href="/request/checkin"
@@ -239,31 +238,6 @@ export default function PublicRequestPage() {
           </div>
         </section>
 
-        <section className="px-3 pb-[max(3rem,env(safe-area-inset-bottom))] sm:px-5 sm:pb-16 lg:px-6">
-          <div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-[linear-gradient(120deg,#071617,#134e4a_55%,#1f7a72)] px-6 py-12 text-[#f7faf9] sm:px-12 sm:py-14">
-            <div className="max-w-2xl">
-              <h2 className="font-display text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">
-                Festive offer
-              </h2>
-              <p className="mt-4 text-base leading-relaxed text-white/75 sm:text-lg">
-                {brand.shortName} matches your bills on home fixes checked in
-                this festive season.
-              </p>
-              <Link
-                href="/request/checkin"
-                className="mt-6 flex w-full sm:inline-flex sm:w-auto"
-              >
-                <Button
-                  variant="accent"
-                  size="lg"
-                  className="h-14 w-full px-8 text-lg sm:w-auto"
-                >
-                  Start your check-in
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
       </main>
     </div>
   );

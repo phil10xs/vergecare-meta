@@ -280,5 +280,23 @@ export async function markPaymentDue(
     .where(eq(job.id, jobId));
 }
 
+/** Updates the price without touching the payment status. */
+export async function setPaymentAmount(
+  jobId: string,
+  amountPence: number,
+): Promise<void> {
+  if (
+    !Number.isInteger(amountPence) ||
+    amountPence <= 0 ||
+    amountPence > 10000000
+  ) {
+    throw new Error("Enter a valid amount");
+  }
+  await db
+    .update(job)
+    .set({ paymentAmount: amountPence, updatedAt: new Date() })
+    .where(eq(job.id, jobId));
+}
+
 export { REPORT_SECTIONS };
 export type { ReportSectionKey };

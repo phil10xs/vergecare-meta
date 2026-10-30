@@ -5,6 +5,7 @@ import { JobPaymentBadge, JobPriorityBadge } from "@/components/ui/status-badge"
 import {
   markPaidAction,
   moveBoardIssueAction,
+  saveBoardIssueAmountAction,
   savePaymentDecisionAction,
   setJobStatusAction,
 } from "@/app/actions/requests";
@@ -185,6 +186,37 @@ export function TrackBoard({
                             </Button>
                           </form>
                         ) : null}
+                        <form
+                          action={saveBoardIssueAmountAction}
+                          className="mt-2 flex gap-2"
+                        >
+                          <input type="hidden" name="token" value={boardToken} />
+                          <input
+                            type="hidden"
+                            name="propertyKey"
+                            value={propertyKey}
+                          />
+                          <input type="hidden" name="jobId" value={card.id} />
+                          <input
+                            name="amount"
+                            inputMode="decimal"
+                            defaultValue={
+                              card.paymentAmount
+                                ? (card.paymentAmount / 100).toString()
+                                : ""
+                            }
+                            placeholder="£"
+                            aria-label={`Price for ${card.title}`}
+                            className="text-field min-w-0 flex-1"
+                          />
+                          <Button
+                            type="submit"
+                            variant="outline"
+                            className="h-11 shrink-0 px-4"
+                          >
+                            Save
+                          </Button>
+                        </form>
                       </>
                     ) : (
                       <form

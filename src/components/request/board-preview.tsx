@@ -16,8 +16,6 @@ export function BoardPreview() {
     let animating = false;
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-    const overflows = () => el.scrollWidth > el.clientWidth + 1;
-
     const schedule = () => {
       window.clearTimeout(timer);
       timer = window.setTimeout(step, IDLE_MS);
@@ -31,16 +29,19 @@ export function BoardPreview() {
     };
 
     function step() {
-      if (overflows()) {
-        const max = Math.max(0, el.scrollWidth - el.clientWidth);
-        const left = towardsEnd ? max : 0;
-        towardsEnd = !towardsEnd;
-        animating = true;
-        el.scrollTo({
-          left,
-          behavior: motion.matches ? "auto" : "smooth",
-        });
+      const node = scrollerRef.current;
+      if (!node || node.scrollWidth <= node.clientWidth + 1) {
+        schedule();
+        return;
       }
+      const max = Math.max(0, node.scrollWidth - node.clientWidth);
+      const left = towardsEnd ? max : 0;
+      towardsEnd = !towardsEnd;
+      animating = true;
+      node.scrollTo({
+        left,
+        behavior: motion.matches ? "auto" : "smooth",
+      });
       schedule();
     }
 

@@ -14,6 +14,7 @@ import {
   recordPayment,
   saveVideoAnalysis,
   setJobStatus,
+  setPaymentAmount,
 } from "@/server/reporting";
 import {
   beginPropertyBoard,
@@ -21,6 +22,7 @@ import {
 } from "@/server/board-access";
 import { addressFromKey, safeAppPath, withSearchParam } from "@/lib/app-url";
 import { adjacentBoardStatus } from "@/lib/board-flow";
+import { parsePoundsToPence } from "@/lib/payments";
 import { sessionAddress } from "@/lib/sessions";
 import { groupFilesBySession } from "@/lib/media-rules";
 import { TRADE_OPTIONS } from "@/lib/chat-parse";
@@ -201,16 +203,35 @@ export async function savePaymentDecisionAction(
   }
   const raw = formText(formData, "amount");
   if (decision === "sent") {
-    if (!raw) throw new Error("Job and amount are required");
-    const pounds = Number(raw);
-    if (!Number.isFinite(pounds) || pounds <= 0) {
-      throw new Error("Enter a valid amount");
-    }
-    await recordPayment(jobId, Math.round(pounds * 100));
+    await recordPayment(jobId, parsePoundsToPence(raw));
   } else {
-    await markPaymentDue(jobId, raw ? Math.round(Number(raw) * 100) : null);
+    await markPaymentDue(jobId, raw ? parsePoundsToPence(raw) : null);
   }
   revalidatePath("/track");
+}
+
+export async function saveBoardIssueAmountAction(
+  formData: FormData,
+): Promise<void> {
+  const token = formText(formData, "token");
+  const propertyKeyValue = formText(formData, "propertyKey");
+  const jobId = formText(formData, "jobId");
+  if (!token || !propertyKeyValue || !jobId) {
+    throw new Error("Job and amount are required");
+  }
+  const address = addressFromKey(propertyKeyValue);
+  if (!address) throw new Error("Property not found");
+  const access = await getLandlordAccess(token);
+  if (!access) throw new Error("This link has expired");
+  const owned = access.jobs.find(
+    (row) => row.id === jobId && sessionAddress(row) === address,
+  );
+  if (!owned) throw new Error("Issue not found");
+  await setPaymentAmount(jobId, parsePoundsToPence(formText(formData, "amount")));
+  const boardPath = `/b/${encodeURIComponent(token)}/p/${encodeURIComponent(propertyKeyValue)}/board`;
+  revalidatePath(boardPath);
+  revalidatePath(`/b/${encodeURIComponent(token)}/p/${encodeURIComponent(propertyKeyValue)}`);
+  revalidatePath(`/b/${encodeURIComponent(token)}`);
 }
 
 export async function markPaidAction(formData: FormData): Promise<void> {
