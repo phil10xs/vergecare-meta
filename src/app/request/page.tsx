@@ -10,7 +10,12 @@ export const metadata: Metadata = {
   description: brand.description,
 };
 
-const AUDIENCE = ["Landlords", "Homeowners", "Tenants"] as const;
+const AUDIENCE = [
+  "Landlords",
+  "Homeowners",
+  "Tenants",
+  "Property/Facility Managers",
+] as const;
 
 const TESTIMONIALS = [
   {
