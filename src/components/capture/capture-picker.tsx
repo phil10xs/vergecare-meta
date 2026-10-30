@@ -6,7 +6,7 @@ import { Modal } from "@/components/ui/modal";
 import { durationOf } from "./media-upload-fields";
 import { VideoRecorder } from "./video-recorder";
 import { checkMediaSelection } from "@/lib/media-rules";
-import { isRecordingSupported } from "@/lib/recorder";
+import { isRecordingSupported, shouldUseNativeCapture } from "@/lib/recorder";
 
 type Source = "video" | "gallery";
 
@@ -43,6 +43,21 @@ export function CapturePicker() {
   const [recorderOpen, setRecorderOpen] = React.useState(false);
   const [previews, setPreviews] = React.useState<Preview[]>([]);
   const [error, setError] = React.useState<string | null>(null);
+  // Detected after mount so server and first client render agree.
+  const [nativeCapture, setNativeCapture] = React.useState(false);
+
+  React.useEffect(() => {
+    const coarse =
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(pointer: coarse)").matches;
+    setNativeCapture(
+      shouldUseNativeCapture({
+        userAgent: navigator.userAgent ?? "",
+        maxTouchPoints: navigator.maxTouchPoints ?? 0,
+        coarsePointer: coarse,
+      }),
+    );
+  }, []);
   const videoRef = React.useRef<HTMLInputElement>(null);
   const galleryRef = React.useRef<HTMLInputElement>(null);
   const urlsRef = React.useRef<string[]>([]);
@@ -114,7 +129,7 @@ export function CapturePicker() {
 
   function pick(source: Source) {
     setSheetOpen(false);
-    if (source === "video" && isRecordingSupported()) {
+    if (source === "video" && !nativeCapture && isRecordingSupported()) {
       setRecorderOpen(true);
       return;
     }
@@ -247,7 +262,9 @@ export function CapturePicker() {
                     {source.label}
                   </span>
                   <span className="block text-sm text-muted-foreground">
-                    {source.hint}
+                    {source.key === "video" && nativeCapture
+                      ? "Opens your camera · 20 seconds max"
+                      : source.hint}
                   </span>
                 </span>
               </button>
