@@ -33,9 +33,20 @@ starts the stack, and pushes the schema. Re-run to redeploy (reuses the box
 With a domain (HTTPS via Caddy auto-provision):
 
 ```bash
-DOMAIN=snag.example.com ./scripts/aws-deploy.sh
-# then point an A record at the printed Elastic IP and re-run once DNS lands
+DOMAIN=demo-vergesnag.goverge.app ./scripts/aws-deploy.sh
+# Point an A record for demo-vergesnag.goverge.app at the printed Elastic IP.
+# Hostinger name: demo-vergesnag. Caddy issues HTTPS after that record resolves.
 ```
+
+Magic-link mail uses SES. In `deploy/.secrets/app.env` (never commit it) set:
+
+- `APP_URL` and `NEXT_PUBLIC_APP_URL` to `https://demo-vergesnag.goverge.app`
+- `SES_FROM_EMAIL` — a verified `goverge.app` sender (GoVerge uses `SES_FROM_EMAIL`)
+- `SES_FROM_NAME=VergeSnag`
+- `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` — existing AWS credentials
+- `SES_CONFIGURATION_SET` — optional, same configuration set as GoVerge if you already use one
+
+Leave `SES_FROM_EMAIL` empty and the app still opens boards; it reports that nothing was sent.
 
 Without Docker running: `REMOTE_BUILD=1 ./scripts/aws-deploy.sh` (slow).
 

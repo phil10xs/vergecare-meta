@@ -1,3 +1,4 @@
+# Production host: demo-vergesnag.goverge.app (set DOMAIN in the box env). No basePath.
 # VergeSnag gateway. DOMAIN is injected from the box .env; with no domain
 # Caddy serves plain HTTP on the Elastic IP (fine for a demo, no warning
 # pages). Point a domain at the IP and Caddy provisions HTTPS automatically.

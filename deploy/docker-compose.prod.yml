@@ -31,6 +31,13 @@ services:
       DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/vergefield
       META_MODEL_API_KEY: ${META_MODEL_API_KEY:-}
       NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL}
+      APP_URL: ${APP_URL:-}
+      SES_FROM_EMAIL: ${SES_FROM_EMAIL:-}
+      SES_FROM_NAME: ${SES_FROM_NAME:-VergeSnag}
+      AWS_REGION: ${AWS_REGION:-us-east-1}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      SES_CONFIGURATION_SET: ${SES_CONFIGURATION_SET:-}
     volumes:
       - uploads:/app/uploads
     expose:

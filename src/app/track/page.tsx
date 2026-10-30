@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { CheckCircle2, ClipboardCheck, KanbanSquare } from "lucide-react";
-import { ListHero } from "@/components/layout/list-overview";
+import { AppShell } from "@/components/layout/app-shell";
+import { Notice, PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { TrackBoard } from "@/components/track/track-board";
 import { TrackList } from "@/components/track/track-list";
@@ -22,56 +22,50 @@ export default async function TrackPage({
   const jobs = await db.select().from(job).orderBy(asc(job.createdAt));
 
   return (
-    <main className="mx-auto w-full max-w-[var(--app-page-max)] px-[var(--app-gutter)] py-8">
+    <AppShell>
       <ReportCelebration active={paid === "1" || celebrate === "1"} />
-      <ListHero
+      <PageHeader
         title="Track"
-        description="Every property's visits and sessions — as an Issues snag list or your Home/Property's Issues & Bills Tracker Board."
-        icon={current === "board" ? KanbanSquare : ClipboardCheck}
-        count={jobs.length}
-        countLabel={jobs.length === 1 ? "session" : "sessions"}
-        actionHref="/request"
-        actionLabel="New check-in"
+        description="Every property's visits, as a snag list or a board."
+        meta={`${jobs.length} ${jobs.length === 1 ? "session" : "sessions"}`}
+        actions={
+          <Link href="/request" className="flex w-full">
+            <Button variant="accent" className="w-full">
+              New check-in
+            </Button>
+          </Link>
+        }
       />
 
       {paid === "1" ? (
-        <div className="mb-4 flex items-start gap-3 rounded-2xl border border-border bg-card p-4">
-          <CheckCircle2
-            className="mt-0.5 h-5 w-5 shrink-0 text-[var(--gv-teal-bright)]"
-            aria-hidden
-          />
-          <div className="text-sm">
-            <p className="font-semibold">Your payment has been confirmed.</p>
-            <p className="mt-0.5 text-muted-foreground">
-              The issue now shows as Paid on the board.
-            </p>
-          </div>
-        </div>
+        <Notice title="Your payment has been confirmed.">
+          The issue now shows as Paid on the board.
+        </Notice>
       ) : null}
 
       {celebrate === "1" ? (
-        <div className="mb-4 flex items-start gap-3 rounded-2xl border border-border bg-card p-4">
-          <CheckCircle2
-            className="mt-0.5 h-5 w-5 shrink-0 text-[var(--gv-teal-bright)]"
-            aria-hidden
-          />
-          <div className="text-sm">
-            <p className="font-semibold">Issue moved to Completed.</p>
-            <p className="mt-0.5 text-muted-foreground">
-              One more fix off the list.
-            </p>
-          </div>
-        </div>
+        <Notice title="Issue moved to Completed.">
+          One more fix off the list.
+        </Notice>
       ) : null}
 
-      <nav aria-label="Track view" className="mb-4 flex gap-2">
-        <Link href="/track?view=list">
-          <Button size="sm" variant={current === "list" ? "accent" : "outline"}>
+      <nav
+        aria-label="Track view"
+        className="mb-6 grid grid-cols-2 gap-2 sm:max-w-xs"
+      >
+        <Link href="/track?view=list" className="flex">
+          <Button
+            className="w-full"
+            variant={current === "list" ? "accent" : "outline"}
+          >
             List
           </Button>
         </Link>
-        <Link href="/track?view=board">
-          <Button size="sm" variant={current === "board" ? "accent" : "outline"}>
+        <Link href="/track?view=board" className="flex">
+          <Button
+            className="w-full"
+            variant={current === "board" ? "accent" : "outline"}
+          >
             Board
           </Button>
         </Link>
@@ -82,6 +76,6 @@ export default async function TrackPage({
       ) : (
         <TrackList jobs={jobs} />
       )}
-    </main>
+    </AppShell>
   );
 }

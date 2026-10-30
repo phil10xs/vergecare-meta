@@ -4,10 +4,11 @@
 # AWS CLI credentials (verify with aws sts get-caller-identity).
 #
 #   ./scripts/aws-deploy.sh
-#   DOMAIN=snag.example.com ./scripts/aws-deploy.sh   # HTTPS via Caddy
+#   DOMAIN=demo-vergesnag.goverge.app ./scripts/aws-deploy.sh   # HTTPS via Caddy
 #   REMOTE_BUILD=1 ./scripts/aws-deploy.sh            # compile on EC2 (slow)
 #
-# Without DOMAIN the app serves plain HTTP on the Elastic IP.
+# Default host is demo-vergesnag.goverge.app. Caddy serves HTTPS once the
+# Hostinger A record for demo-vergesnag points at the Elastic IP.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -17,9 +18,9 @@ INSTANCE_TYPE="${INSTANCE_TYPE:-t4g.small}"
 VOLUME_GB="${VOLUME_GB:-40}"
 KEY_NAME="${KEY_NAME:-vergesnag-deploy}"
 SG_NAME="${SG_NAME:-vergesnag-app-sg}"
-DOMAIN="${DOMAIN:-}"
+DOMAIN="${DOMAIN:-demo-vergesnag.goverge.app}"
 REMOTE_BUILD="${REMOTE_BUILD:-0}"
-REMOTE_DIR="\$HOME/vergesnag"
+REMOTE_DIR="/home/ec2-user/vergesnag"
 KEY_FILE="$HOME/.ssh/${KEY_NAME}.pem"
 ENV_FILE="$ROOT/deploy/.secrets/app.env"
 
@@ -105,20 +106,38 @@ ALLOC_ID="$(aws ec2 describe-addresses --region "$REGION" \
   --query 'Addresses[0].AllocationId' --output text 2>/dev/null || true)"
 if [[ -z "$ALLOC_ID" || "$ALLOC_ID" == "None" ]]; then
   log "Allocating Elastic IP"
-  ALLOC_ID="$(aws ec2 allocate-address --region "$REGION" --domain vpc \
-    --query AllocationId --output text)"
-  aws ec2 create-tags --region "$REGION" --resources "$ALLOC_ID" \
-    --tags "Key=Name,Value=$NAME_TAG"
+  if ! ALLOC_ID="$(aws ec2 allocate-address --region "$REGION" --domain vpc \
+    --query AllocationId --output text 2>/tmp/vergesnag-eip.err)"; then
+    if grep -q AddressLimitExceeded /tmp/vergesnag-eip.err; then
+      ALLOC_ID=""
+      log "Elastic IP limit reached. Continuing on the instance public IP."
+      log "That address changes if the instance stops. Hostinger should wait for an Elastic IP."
+    else
+      cat /tmp/vergesnag-eip.err
+      exit 1
+    fi
+  else
+    aws ec2 create-tags --region "$REGION" --resources "$ALLOC_ID" \
+      --tags "Key=Name,Value=$NAME_TAG"
+  fi
+  rm -f /tmp/vergesnag-eip.err
 fi
-ASSOC="$(aws ec2 describe-addresses --region "$REGION" \
-  --allocation-ids "$ALLOC_ID" --query 'Addresses[0].InstanceId' --output text)"
-if [[ "$ASSOC" != "$INSTANCE_ID" ]]; then
-  aws ec2 associate-address --region "$REGION" --instance-id "$INSTANCE_ID" \
-    --allocation-id "$ALLOC_ID" >/dev/null
+if [[ -n "$ALLOC_ID" ]]; then
+  ASSOC="$(aws ec2 describe-addresses --region "$REGION" \
+    --allocation-ids "$ALLOC_ID" --query 'Addresses[0].InstanceId' --output text)"
+  if [[ "$ASSOC" != "$INSTANCE_ID" ]]; then
+    aws ec2 associate-address --region "$REGION" --instance-id "$INSTANCE_ID" \
+      --allocation-id "$ALLOC_ID" >/dev/null
+  fi
+  PUBLIC_IP="$(aws ec2 describe-addresses --region "$REGION" \
+    --allocation-ids "$ALLOC_ID" --query 'Addresses[0].PublicIp' --output text)"
+  log "Elastic IP $PUBLIC_IP"
+else
+  PUBLIC_IP="$(aws ec2 describe-instances --region "$REGION" \
+    --instance-ids "$INSTANCE_ID" \
+    --query 'Reservations[0].Instances[0].PublicIpAddress' --output text)"
+  log "Instance public IP $PUBLIC_IP (not an Elastic IP)"
 fi
-PUBLIC_IP="$(aws ec2 describe-addresses --region "$REGION" \
-  --allocation-ids "$ALLOC_ID" --query 'Addresses[0].PublicIp' --output text)"
-log "Public IP $PUBLIC_IP"
 
 # --- Secrets (local file, never committed) ---
 mkdir -p "$(dirname "$ENV_FILE")"
@@ -137,21 +156,77 @@ if [[ ! -f "$ENV_FILE" ]]; then
 POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 DOMAIN=${DOMAIN}
 NEXT_PUBLIC_APP_URL=${APP_URL}
+APP_URL=${APP_URL}
 META_MODEL_API_KEY=${META_KEY}
+SES_FROM_EMAIL=
+SES_FROM_NAME=VergeSnag
+AWS_REGION=${REGION}
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+SES_CONFIGURATION_SET=
 EOF
   chmod 600 "$ENV_FILE"
   log "Wrote secrets to $ENV_FILE (edit NEXT_PUBLIC_APP_URL when DNS lands)"
 else
   log "Reusing secrets in $ENV_FILE"
 fi
+append_env_if_missing() {
+  local key="$1"
+  local value="$2"
+  if grep -q "^${key}=" "$ENV_FILE"; then
+    return 0
+  fi
+  printf '%s=%s\n' "$key" "$value" >> "$ENV_FILE"
+}
+append_env_if_missing APP_URL ""
+append_env_if_missing SES_FROM_EMAIL ""
+append_env_if_missing SES_FROM_NAME "VergeSnag"
+append_env_if_missing AWS_REGION "$REGION"
+append_env_if_missing AWS_ACCESS_KEY_ID ""
+append_env_if_missing AWS_SECRET_ACCESS_KEY ""
+append_env_if_missing SES_CONFIGURATION_SET ""
+upsert_env() {
+  local key="$1"
+  local value="$2"
+  local tmp
+  tmp="$(mktemp)"
+  if grep -q "^${key}=" "$ENV_FILE"; then
+    awk -v k="$key" -v v="$value" 'BEGIN{FS=OFS="="} $1==k {print k "=" v; next} {print}' "$ENV_FILE" >"$tmp"
+    mv "$tmp" "$ENV_FILE"
+  else
+    printf '%s=%s\n' "$key" "$value" >>"$ENV_FILE"
+  fi
+  chmod 600 "$ENV_FILE"
+}
+if [[ -n "$DOMAIN" ]]; then
+  upsert_env DOMAIN "$DOMAIN"
+  upsert_env APP_URL "https://$DOMAIN"
+  upsert_env NEXT_PUBLIC_APP_URL "https://$DOMAIN"
+fi
 # shellcheck disable=SC1090
 source "$ENV_FILE"
+if [[ -z "${SES_FROM_EMAIL:-}" ]]; then
+  echo "SES_FROM_EMAIL is empty in $ENV_FILE — set a verified sender and AWS credentials there before magic-link email will send."
+fi
 if [[ -n "$DOMAIN" && "${NEXT_PUBLIC_APP_URL:-}" != "https://$DOMAIN" ]]; then
   echo "Note: DOMAIN=$DOMAIN but NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL — rebuild after DNS moves."
 fi
 
 SSH="ssh -i $KEY_FILE -o StrictHostKeyChecking=accept-new ec2-user@$PUBLIC_IP"
 SCP="scp -i $KEY_FILE -o StrictHostKeyChecking=accept-new"
+
+log "Waiting for SSH + Docker on $PUBLIC_IP"
+for i in $(seq 1 90); do
+  if ssh -i "$KEY_FILE" -o StrictHostKeyChecking=accept-new -o ConnectTimeout=5 \
+    "ec2-user@$PUBLIC_IP" 'sudo docker info >/dev/null 2>&1'; then
+    break
+  fi
+  sleep 5
+  if [[ $i -eq 90 ]]; then
+    echo "SSH/docker not ready"
+    exit 1
+  fi
+done
 
 # --- Ship code ---
 log "Shipping compose files"

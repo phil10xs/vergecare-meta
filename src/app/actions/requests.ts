@@ -15,7 +15,13 @@ import {
   saveVideoAnalysis,
   setJobStatus,
 } from "@/server/reporting";
-import { requestBoardLink } from "@/server/board-access";
+import {
+  beginPropertyBoard,
+  getLandlordAccess,
+} from "@/server/board-access";
+import { addressFromKey, safeAppPath, withSearchParam } from "@/lib/app-url";
+import { adjacentBoardStatus } from "@/lib/board-flow";
+import { sessionAddress } from "@/lib/sessions";
 import { groupFilesBySession } from "@/lib/media-rules";
 import { TRADE_OPTIONS } from "@/lib/chat-parse";
 import { analyzeVideo, assessIssue } from "@/server/analyze-video";
@@ -140,15 +146,49 @@ export async function setJobStatusAction(
   await setJobStatus(jobId, status);
   revalidatePath("/track");
   if (status === "completed") {
-    redirect("/track?view=board&celebrate=1");
+    const dest = safeAppPath(formText(formData, "returnTo")) ?? "/track?view=board";
+    redirect(withSearchParam(dest, "celebrate", "1"));
   }
 }
 
-export async function requestBoardLinkAction(
+export async function openPropertyBoardAction(
   jobId: string,
   email: string,
-): Promise<{ url: string; emailed: boolean }> {
-  return requestBoardLink(jobId, email);
+) {
+  return beginPropertyBoard(jobId, email);
+}
+
+export async function moveBoardIssueAction(formData: FormData): Promise<void> {
+  const token = formText(formData, "token");
+  const propertyKeyValue = formText(formData, "propertyKey");
+  const jobId = formText(formData, "jobId");
+  const direction = formText(formData, "direction");
+  if (
+    !token ||
+    !propertyKeyValue ||
+    !jobId ||
+    (direction !== "next" && direction !== "prev")
+  ) {
+    throw new Error("Job and direction are required");
+  }
+  const address = addressFromKey(propertyKeyValue);
+  if (!address) throw new Error("Property not found");
+  const access = await getLandlordAccess(token);
+  if (!access) throw new Error("This link has expired");
+  const owned = access.jobs.find(
+    (row) => row.id === jobId && sessionAddress(row) === address,
+  );
+  if (!owned) throw new Error("Issue not found");
+  const status = adjacentBoardStatus(owned.status, direction);
+  if (!status) return;
+  await setJobStatus(jobId, status);
+  const boardPath = `/b/${encodeURIComponent(token)}/p/${encodeURIComponent(propertyKeyValue)}/board`;
+  revalidatePath(boardPath);
+  revalidatePath(`/b/${encodeURIComponent(token)}/p/${encodeURIComponent(propertyKeyValue)}`);
+  revalidatePath(`/b/${encodeURIComponent(token)}`);
+  if (status === "completed") {
+    redirect(withSearchParam(boardPath, "celebrate", "1"));
+  }
 }
 
 export async function savePaymentDecisionAction(

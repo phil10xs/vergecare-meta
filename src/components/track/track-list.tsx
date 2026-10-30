@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { EmptyState } from "@/components/layout/page-header";
+import { ViewBoardButton } from "@/components/request/view-board-button";
 import {
   JobPaymentBadge,
   JobStatusBadge,
 } from "@/components/ui/status-badge";
+import { isValidEmail } from "@/lib/board-token";
 import { groupSessionsByPropertyVisit } from "@/lib/sessions";
 import type { Job } from "@/db/schema";
 
@@ -23,24 +25,38 @@ export function TrackList({ jobs }: { jobs: Job[] }) {
 
   return (
     <div className="space-y-6">
-      {groups.map((group) => (
+      {groups.map((group) => {
+        const sessions = group.visits.flatMap((visit) => visit.sessions);
+        const sample = sessions[0];
+        const knownEmail = sessions.find(
+          (session) =>
+            session.requesterContact && isValidEmail(session.requesterContact),
+        )?.requesterContact;
+        return (
         <section
           key={group.address}
           aria-label={group.address}
           className="overflow-hidden rounded-2xl border border-border bg-card"
         >
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-secondary/50 px-4 py-3">
-            <h2 className="font-display text-base font-bold tracking-tight">
-              {group.address}
-            </h2>
-            <span className="text-xs font-semibold text-muted-foreground">
-              {group.sessionCount}{" "}
-              {group.sessionCount === 1 ? "session" : "sessions"}
-            </span>
+          <div className="flex flex-col gap-4 border-b border-border px-4 py-4 sm:px-5 lg:flex-row lg:items-start lg:justify-between">
+            <div className="min-w-0">
+              <h2 className="font-display text-lg font-bold tracking-tight break-words">
+                {group.address}
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {group.sessionCount}{" "}
+                {group.sessionCount === 1 ? "session" : "sessions"}
+              </p>
+            </div>
+            {sample ? (
+              <div className="w-full min-w-0 lg:w-80 lg:shrink-0">
+                <ViewBoardButton jobId={sample.id} knownEmail={knownEmail} />
+              </div>
+            ) : null}
           </div>
           {group.visits.map((visit) => (
             <div key={visit.day} className="border-b border-border/60 last:border-0">
-              <p className="px-4 pt-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              <p className="px-4 pt-3 text-sm font-semibold text-muted-foreground sm:px-5">
                 Visit · {visit.label}
               </p>
               <ul className="divide-y divide-border/60">
@@ -49,13 +65,13 @@ export function TrackList({ jobs }: { jobs: Job[] }) {
                     {session.source === "public" ? (
                       <Link
                         href={`/request/${session.id}`}
-                        className="flex flex-col gap-2 px-4 py-3 hover:bg-secondary/50 sm:flex-row sm:items-center sm:justify-between"
+                        className="flex min-h-14 flex-col gap-2 px-4 py-3.5 hover:bg-secondary/50 sm:flex-row sm:items-center sm:justify-between sm:px-5"
                       >
                         <span className="min-w-0">
-                          <span className="block truncate text-sm font-semibold">
+                          <span className="block text-sm font-semibold break-words">
                             {session.title}
                           </span>
-                          <span className="mt-0.5 block text-xs text-muted-foreground">
+                          <span className="mt-0.5 block text-sm text-muted-foreground">
                             {session.tradesmanTrade ?? "Trade detecting…"}
                             {session.tradesmanName
                               ? ` · ${session.tradesmanName}`
@@ -71,12 +87,12 @@ export function TrackList({ jobs }: { jobs: Job[] }) {
                         </span>
                       </Link>
                     ) : (
-                      <div className="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="flex min-h-14 flex-col gap-2 px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between sm:px-5">
                         <span className="min-w-0">
-                          <span className="block truncate text-sm font-semibold">
+                          <span className="block text-sm font-semibold break-words">
                             {session.title}
                           </span>
-                          <span className="mt-0.5 block text-xs text-muted-foreground">
+                          <span className="mt-0.5 block text-sm text-muted-foreground">
                             {session.tradesmanTrade ?? "Trade detecting…"}
                             {session.tradesmanName
                               ? ` · ${session.tradesmanName}`
@@ -98,7 +114,8 @@ export function TrackList({ jobs }: { jobs: Job[] }) {
             </div>
           ))}
         </section>
-      ))}
+        );
+      })}
     </div>
   );
 }

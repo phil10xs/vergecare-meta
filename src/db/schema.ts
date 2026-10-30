@@ -89,6 +89,8 @@ export const jobNotes = pgTable("job_notes", {
   nextSteps: text("next_steps"),
 });
 
+// Magic-link credential. Access is this token, independent of any future password.
+// jobId is the check-in the link was requested from, not a password binding.
 export const boardToken = pgTable("board_token", {
   token: text("token").primaryKey(),
   jobId: uuid("job_id")

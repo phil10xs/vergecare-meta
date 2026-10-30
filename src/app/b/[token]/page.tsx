@@ -1,151 +1,77 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { KanbanSquare, Link2Off } from "lucide-react";
-import { ListHero } from "@/components/layout/list-overview";
-import {
-  JobPaymentBadge,
-  JobStatusBadge,
-} from "@/components/ui/status-badge";
+import { AppShell } from "@/components/layout/app-shell";
+import { EmptyState, PageHeader } from "@/components/layout/page-header";
+import { ExpiredBoardLink } from "@/components/track/expired-link";
 import { Button } from "@/components/ui/button";
-import { getBoardJob } from "@/server/board-access";
-import { sessionAddress } from "@/lib/sessions";
-import { db } from "@/db";
-import { job } from "@/db/schema";
-import { asc, eq } from "drizzle-orm";
+import { propertySnagPath } from "@/lib/app-url";
+import { groupSessionsByPropertyVisit } from "@/lib/sessions";
+import { getLandlordAccess } from "@/server/board-access";
 
-export const metadata: Metadata = { title: "Issues & Bills Tracker Board" };
+export const dynamic = "force-dynamic";
+export const metadata: Metadata = { title: "My properties" };
 
-const COLUMNS = [
-  { key: "requested", label: "Requested" },
-  { key: "in_progress", label: "In progress" },
-  { key: "completed", label: "Completed" },
-  { key: "paid", label: "Paid" },
-] as const;
-
-export default async function PublicBoardPage({
+export default async function MyPropertiesPage({
   params,
 }: {
   params: Promise<{ token: string }>;
 }) {
   const { token } = await params;
-  const anchor = await getBoardJob(token);
+  const access = await getLandlordAccess(token);
+  if (!access) return <ExpiredBoardLink />;
 
-  if (!anchor) {
-    return (
-      <main className="mx-auto w-full max-w-xl px-[var(--app-gutter)] py-8">
-        <div className="rounded-2xl border border-border bg-card p-6 text-center">
-          <Link2Off
-            className="mx-auto h-10 w-10 text-muted-foreground"
-            aria-hidden
-          />
-          <h1 className="mt-3 font-display text-2xl font-bold tracking-tight">
-            This link has expired
-          </h1>
-          <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-            Board links last 7 days. Ask for a fresh one from your visit
-            report — no account needed.
-          </p>
-          <div className="mt-5">
-            <Link href="/request">
-              <Button variant="accent" className="w-full sm:w-auto">
-                Start a check-in
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </main>
-    );
-  }
-
-  const address = sessionAddress(anchor);
-  const jobs =
-    anchor.propertyAddress || anchor.siteName
-      ? await db
-          .select()
-          .from(job)
-          .where(
-            anchor.propertyAddress
-              ? eq(job.propertyAddress, anchor.propertyAddress)
-              : eq(job.siteName, anchor.siteName!),
-          )
-          .orderBy(asc(job.createdAt))
-      : [anchor];
+  const groups = groupSessionsByPropertyVisit(access.jobs);
 
   return (
-    <main className="mx-auto w-full max-w-[var(--app-page-max)] px-[var(--app-gutter)] py-8">
-      <ListHero
-        title={address}
-        description="Live tracker for this property — the trade team updates it as work moves."
-        icon={KanbanSquare}
-        count={jobs.length}
-        countLabel={jobs.length === 1 ? "session" : "sessions"}
-        actionHref="/request"
-        actionLabel="New check-in"
+    <AppShell>
+      <PageHeader
+        title="My properties"
+        description="Every property on this link. Open a snag list, then View Board to move issues. No password."
+        meta={`${groups.length} ${groups.length === 1 ? "property" : "properties"}`}
+        actions={
+          <Link href="/request" className="flex w-full">
+            <Button variant="accent" className="w-full">
+              New check-in
+            </Button>
+          </Link>
+        }
       />
-
-      <div className="flex snap-x gap-4 overflow-x-auto pb-2">
-        {COLUMNS.map((column) => {
-          const cards = jobs.filter((entry) => entry.status === column.key);
-          return (
-            <section
-              key={column.key}
-              aria-label={column.label}
-              className="w-72 shrink-0 snap-start rounded-2xl border border-border bg-secondary/40 p-3"
-            >
-              <h2 className="flex items-center justify-between px-1 pb-2 font-display text-sm font-bold tracking-tight">
-                {column.label}
-                <span className="rounded-lg bg-primary px-2 py-0.5 text-xs font-semibold text-primary-foreground">
-                  {cards.length}
+      {groups.length === 0 ? (
+        <EmptyState
+          title="No check-ins on this link yet"
+          description="Properties show up here after you check in with this email."
+          href="/request"
+          actionLabel="New check-in"
+        />
+      ) : (
+        <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          {groups.map((group) => (
+            <li key={group.address} className="min-w-0">
+              <Link
+                href={propertySnagPath(token, group.address)}
+                className="flex h-full min-h-16 items-center justify-between gap-3 rounded-2xl border border-border bg-card px-4 py-4 hover:bg-secondary/40"
+              >
+                <span className="min-w-0">
+                  <span className="block font-display text-base font-bold tracking-tight break-words">
+                    {group.address}
+                  </span>
+                  <span className="mt-1 block text-sm text-muted-foreground">
+                    {group.sessionCount}{" "}
+                    {group.sessionCount === 1 ? "issue" : "issues"}
+                  </span>
                 </span>
-              </h2>
-              <div className="space-y-2">
-                {cards.map((card) => (
-                  <article
-                    key={card.id}
-                    className="rounded-xl border border-border bg-card p-3"
-                  >
-                    {card.source === "public" ? (
-                      <Link
-                        href={`/request/${card.id}`}
-                        className="block text-sm font-semibold leading-snug hover:underline"
-                      >
-                        {card.title}
-                      </Link>
-                    ) : (
-                      <p className="text-sm font-semibold leading-snug">
-                        {card.title}
-                      </p>
-                    )}
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {card.tradesmanTrade ?? "Trade detecting…"}
-                    </p>
-                    <p className="mt-2 flex flex-wrap gap-2">
-                      <JobStatusBadge status={card.status} />
-                      <JobPaymentBadge
-                        status={card.paymentStatus}
-                        amountPence={card.paymentAmount}
-                      />
-                    </p>
-                  </article>
-                ))}
-                {cards.length === 0 ? (
-                  <p className="rounded-xl border border-dashed border-border px-3 py-6 text-center text-xs text-muted-foreground">
-                    Nothing here.
-                  </p>
-                ) : null}
-              </div>
-            </section>
-          );
-        })}
-      </div>
-      <p className="mt-3 text-xs text-muted-foreground">
-        Read-only view — this link expires 7 days after it was sent.
+                <span className="shrink-0 text-sm font-semibold text-link">
+                  Snag list
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+      <p className="mt-6 text-sm text-muted-foreground">
+        This link is for {access.email}. It expires 7 days after it was last
+        refreshed.
       </p>
-      <p className="mt-4 text-center text-sm">
-        <Link href="/request" className="font-semibold text-link hover:underline">
-          ← Back to check-in
-        </Link>
-      </p>
-    </main>
+    </AppShell>
   );
 }
