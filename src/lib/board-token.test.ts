@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { isBoardTokenLive, isValidEmail, jobsForLandlord } from "./board-token";
+import {
+  classifyLandlordContact,
+  isBoardTokenLive,
+  isValidEmail,
+  isValidPhone,
+  jobsForLandlord,
+} from "./board-token";
 import type { Job } from "@/db/schema";
 
 describe("isValidEmail", () => {
@@ -9,6 +15,22 @@ describe("isValidEmail", () => {
     expect(isValidEmail("not-an-email")).toBe(false);
     expect(isValidEmail("jordan@com")).toBe(false);
     expect(isValidEmail("")).toBe(false);
+  });
+});
+
+describe("classifyLandlordContact", () => {
+  it("treats an email as a magic-link contact and a phone as phone-only", () => {
+    expect(classifyLandlordContact("  Jordan@Example.com ")).toEqual({
+      kind: "email",
+      value: "jordan@example.com",
+    });
+    expect(classifyLandlordContact("07123 888888")).toEqual({
+      kind: "phone",
+      value: "07123 888888",
+    });
+    expect(isValidPhone("07123 888888")).toBe(true);
+    expect(classifyLandlordContact("not-a-contact")).toBeNull();
+    expect(classifyLandlordContact("jordan@com")).toBeNull();
   });
 });
 

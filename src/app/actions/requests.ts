@@ -88,13 +88,10 @@ function mediaFiles(formData: FormData): File[] {
 export async function createPublicRequestAction(
   formData: FormData,
 ): Promise<void> {
-  const requesterName = formText(formData, "requesterName");
-  const requesterContact = formText(formData, "requesterContact");
   const propertyAddress = formText(formData, "propertyAddress");
-  const businessName = formText(formData, "businessName");
   const note = formText(formData, "note");
-  if (!requesterName || !requesterContact || !propertyAddress) {
-    throw new Error("Name, contact, and address are all required");
+  if (!propertyAddress) {
+    throw new Error("Address is required");
   }
   const files = mediaFiles(formData);
   if (!note && files.length === 0) {
@@ -103,8 +100,7 @@ export async function createPublicRequestAction(
   if (files.some((file) => !file.type.startsWith("video/"))) {
     throw new Error("Only videos are allowed — attach short video clips.");
   }
-  const priority: "low" | "medium" | "high" =
-    formText(formData, "urgency") === "urgent" ? "high" : "medium";
+  const priority: "low" | "medium" | "high" = "medium";
   const pickedTrade = formText(formData, "trade");
   const hintedTrade =
     pickedTrade &&
@@ -114,9 +110,9 @@ export async function createPublicRequestAction(
       : null;
   const groups = groupFilesBySession(files);
   const base = {
-    requesterName,
-    requesterContact,
-    businessName,
+    requesterName: null,
+    requesterContact: null,
+    businessName: null,
     propertyAddress,
     priority,
   };
@@ -126,12 +122,12 @@ export async function createPublicRequestAction(
   });
   await saveMediaFiles(created.id, groups[0] ?? [], null);
   await applyInference(created.id, hintedTrade);
-  await generateReport(created.id, requesterName, { markSubmitted: false });
+  await generateReport(created.id, "VergeSnag", { markSubmitted: false });
   for (const group of groups.slice(1)) {
     const sibling = await createPublicRequest({ ...base, description: "" });
     await saveMediaFiles(sibling.id, group, null);
     await applyInference(sibling.id, hintedTrade);
-    await generateReport(sibling.id, requesterName, { markSubmitted: false });
+    await generateReport(sibling.id, "VergeSnag", { markSubmitted: false });
   }
   revalidatePath("/track");
   redirect(`/request/${created.id}?new=1`);
@@ -153,9 +149,10 @@ export async function setJobStatusAction(
 
 export async function openPropertyBoardAction(
   jobId: string,
-  email: string,
+  contact: string,
+  details?: { name: string; businessName: string | null },
 ) {
-  return beginPropertyBoard(jobId, email);
+  return beginPropertyBoard(jobId, contact, details);
 }
 
 export async function moveBoardIssueAction(formData: FormData): Promise<void> {
@@ -186,6 +183,9 @@ export async function moveBoardIssueAction(formData: FormData): Promise<void> {
   revalidatePath(boardPath);
   revalidatePath(`/b/${encodeURIComponent(token)}/p/${encodeURIComponent(propertyKeyValue)}`);
   revalidatePath(`/b/${encodeURIComponent(token)}`);
+  if (status === "paid") {
+    redirect(withSearchParam(boardPath, "celebrate", "paid"));
+  }
   if (status === "completed") {
     redirect(withSearchParam(boardPath, "celebrate", "1"));
   }

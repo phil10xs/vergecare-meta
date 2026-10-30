@@ -46,7 +46,7 @@ export function TrackBoard({
 
   return (
     <>
-      <div className="flex min-w-0 snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain pb-3 min-[1100px]:grid min-[1100px]:grid-cols-4 min-[1100px]:overflow-visible">
+      <div className="flex min-w-0 snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain pb-3 min-[1100px]:grid min-[1100px]:grid-cols-4 min-[1100px]:items-start min-[1100px]:overflow-visible">
         {COLUMNS.map((column) => {
           const cards = jobs.filter((entry) => entry.status === column.key);
           return (
@@ -120,32 +120,54 @@ export function TrackBoard({
                       </div>
                     </dl>
                     {linked ? (
-                      <div className="mt-3 flex gap-2">
-                        {card.status !== "requested" ? (
-                          <form action={moveBoardIssueAction}>
-                            <input type="hidden" name="token" value={boardToken} />
-                            <input
-                              type="hidden"
-                              name="propertyKey"
-                              value={propertyKey}
-                            />
-                            <input type="hidden" name="jobId" value={card.id} />
-                            <input type="hidden" name="direction" value="prev" />
-                            <Button
-                              type="submit"
-                              variant="outline"
-                              className="h-11 w-11 shrink-0 px-0"
-                              aria-label={`Move ${card.title} back`}
+                      <>
+                        <div className="mt-3 flex gap-2">
+                          {card.status !== "requested" ? (
+                            <form action={moveBoardIssueAction}>
+                              <input type="hidden" name="token" value={boardToken} />
+                              <input
+                                type="hidden"
+                                name="propertyKey"
+                                value={propertyKey}
+                              />
+                              <input type="hidden" name="jobId" value={card.id} />
+                              <input type="hidden" name="direction" value="prev" />
+                              <Button
+                                type="submit"
+                                variant="outline"
+                                className="h-11 w-11 shrink-0 px-0"
+                                aria-label={`Move ${card.title} back`}
+                              >
+                                <ChevronLeft className="h-5 w-5" aria-hidden />
+                              </Button>
+                            </form>
+                          ) : null}
+                          {card.status !== "paid" ? (
+                            <form
+                              action={moveBoardIssueAction}
+                              className="min-w-0 flex-1"
                             >
-                              <ChevronLeft className="h-5 w-5" aria-hidden />
-                            </Button>
-                          </form>
-                        ) : null}
-                        {card.status !== "paid" ? (
-                          <form
-                            action={moveBoardIssueAction}
-                            className="min-w-0 flex-1"
-                          >
+                              <input type="hidden" name="token" value={boardToken} />
+                              <input
+                                type="hidden"
+                                name="propertyKey"
+                                value={propertyKey}
+                              />
+                              <input type="hidden" name="jobId" value={card.id} />
+                              <input type="hidden" name="direction" value="next" />
+                              <Button
+                                type="submit"
+                                variant="outline"
+                                className="h-11 w-full px-0"
+                                aria-label={`Move ${card.title} forward`}
+                              >
+                                <ChevronRight className="h-5 w-5" aria-hidden />
+                              </Button>
+                            </form>
+                          ) : null}
+                        </div>
+                        {card.status === "completed" ? (
+                          <form action={moveBoardIssueAction} className="mt-2">
                             <input type="hidden" name="token" value={boardToken} />
                             <input
                               type="hidden"
@@ -156,15 +178,14 @@ export function TrackBoard({
                             <input type="hidden" name="direction" value="next" />
                             <Button
                               type="submit"
-                              variant="outline"
-                              className="h-11 w-full px-0"
-                              aria-label={`Move ${card.title} forward`}
+                              variant="accent"
+                              className="w-full"
                             >
-                              <ChevronRight className="h-5 w-5" aria-hidden />
+                              Pay now
                             </Button>
                           </form>
                         ) : null}
-                      </div>
+                      </>
                     ) : (
                       <form
                         action={setJobStatusAction}

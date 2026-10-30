@@ -176,7 +176,11 @@ export default async function PublicTrackPage({
               <div className="mt-3">
                 <ViewBoardButton
                   jobId={anchor.id}
-                  knownEmail={anchor.requesterContact}
+                  onboarding={{
+                    name: anchor.requesterName ?? "",
+                    businessName: anchor.businessName ?? "",
+                    contact: anchor.requesterContact ?? "",
+                  }}
                 />
               </div>
             </div>

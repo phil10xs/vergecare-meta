@@ -4,7 +4,6 @@ import { brand, howItWorks } from "@/brand";
 import { CapturePicker } from "@/components/capture/capture-picker";
 import { AppShell } from "@/components/layout/app-shell";
 import { CheckinForm } from "@/components/request/checkin-form";
-import { NoteField } from "@/components/request/note-field";
 import { SubmitCheckinButton } from "@/components/request/submit-checkin-button";
 
 export const metadata: Metadata = { title: "New check-in" };
@@ -18,9 +17,8 @@ export default function CheckinPage() {
             Your check-in
           </h1>
           <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-            Leave your details, film what you see, and {brand.engine} builds
-            your Issues snag list and your property&apos;s Issues &amp; Bills
-            Tracker Board.
+            Film what you see, and {brand.engine} builds your Issues snag list
+            and your property&apos;s Bills Tracker.
           </p>
           <ol className="mt-6 space-y-3">
             {howItWorks.map((step, index) => (
@@ -39,16 +37,6 @@ export default function CheckinPage() {
 
         <CheckinForm action={createPublicRequestAction}>
           <label className="block">
-            <span className="mb-1.5 block text-sm font-semibold">Full name</span>
-            <input
-              name="requesterName"
-              required
-              autoComplete="name"
-              placeholder="e.g. Jordan Lee"
-              className="text-field"
-            />
-          </label>
-          <label className="block">
             <span className="mb-1.5 block text-sm font-semibold">
               Property address
             </span>
@@ -62,64 +50,26 @@ export default function CheckinPage() {
           </label>
           <label className="block">
             <span className="mb-1.5 block text-sm font-semibold">
-              Business name{" "}
-              <span className="font-normal text-muted-foreground">
-                (optional)
-              </span>
+              What trade do you need?
             </span>
-            <input
-              name="businessName"
-              autoComplete="organization"
-              placeholder="e.g. Lee Property Care"
+            <select
+              name="trade"
               className="text-field"
-            />
+              defaultValue="auto"
+              disabled
+            >
+              <option value="auto">Auto-detect from my videos</option>
+            </select>
+            <span className="mt-1.5 block text-sm text-muted-foreground">
+              Manual trade picker coming soon — auto-detect is on for now.
+            </span>
           </label>
-          <div className="grid gap-4 @md:grid-cols-2">
-            <label className="block">
-              <span className="mb-1.5 block text-sm font-semibold">
-                Phone or email
-              </span>
-              <input
-                name="requesterContact"
-                required
-                autoComplete="tel"
-                placeholder="How should the team reach you?"
-                className="text-field"
-              />
-            </label>
-            <label className="block">
-              <span className="mb-1.5 block text-sm font-semibold">
-                How urgent?
-              </span>
-              <select name="urgency" className="text-field" defaultValue="normal">
-                <option value="normal">Normal</option>
-                <option value="urgent">Urgent</option>
-              </select>
-            </label>
-            <label className="block @md:col-span-2">
-              <span className="mb-1.5 block text-sm font-semibold">
-                What trade do you need?
-              </span>
-              <select
-                name="trade"
-                className="text-field"
-                defaultValue="auto"
-                disabled
-              >
-                <option value="auto">Auto-detect from my videos</option>
-              </select>
-              <span className="mt-1.5 block text-sm text-muted-foreground">
-                Manual trade picker coming soon — auto-detect is on for now.
-              </span>
-            </label>
-          </div>
           <fieldset>
-            <legend className="mb-1.5 text-sm font-semibold">
-              Videos — film the issues
+            <legend className="mb-1.5 block text-sm font-semibold leading-relaxed">
+              Do a video clip for each issue. Narrate as you film
             </legend>
             <CapturePicker />
           </fieldset>
-          <NoteField />
           <div>
             <SubmitCheckinButton />
             <p className="mt-2 text-center text-sm text-muted-foreground">

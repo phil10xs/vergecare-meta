@@ -5,11 +5,17 @@ import {
   JobPaymentBadge,
   JobStatusBadge,
 } from "@/components/ui/status-badge";
-import { isValidEmail } from "@/lib/board-token";
+import { isValidEmail, normalizeContact } from "@/lib/board-token";
 import { groupSessionsByPropertyVisit } from "@/lib/sessions";
+import { landlordLinksEmailed } from "@/server/board-access";
 import type { Job } from "@/db/schema";
 
-export function TrackList({ jobs }: { jobs: Job[] }) {
+export async function TrackList({ jobs }: { jobs: Job[] }) {
+  const sent = await landlordLinksEmailed(
+    jobs
+      .map((row) => row.requesterContact)
+      .filter((value): value is string => Boolean(value && isValidEmail(value))),
+  );
   const groups = groupSessionsByPropertyVisit(jobs);
 
   if (groups.length === 0) {
@@ -50,7 +56,15 @@ export function TrackList({ jobs }: { jobs: Job[] }) {
             </div>
             {sample ? (
               <div className="w-full min-w-0 lg:w-80 lg:shrink-0">
-                <ViewBoardButton jobId={sample.id} knownEmail={knownEmail} />
+                <ViewBoardButton
+                  jobId={sample.id}
+                  knownEmail={knownEmail}
+                  linkAlreadySent={
+                    knownEmail
+                      ? sent.has(normalizeContact(knownEmail))
+                      : false
+                  }
+                />
               </div>
             ) : null}
           </div>

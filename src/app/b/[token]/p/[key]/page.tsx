@@ -6,7 +6,11 @@ import { ExpiredBoardLink } from "@/components/track/expired-link";
 import { JobStatusBadge } from "@/components/ui/status-badge";
 import { landlordPath } from "@/lib/app-url";
 import { formatVisitDay, groupSessionsByPropertyVisit } from "@/lib/sessions";
-import { loadPropertyForToken } from "@/server/board-access";
+import { snagListDescription } from "@/lib/view-board";
+import {
+  landlordLinkEmailed,
+  loadPropertyForToken,
+} from "@/server/board-access";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Snag list" };
@@ -34,17 +38,22 @@ export default async function PropertySnagPage({
 
   const groups = groupSessionsByPropertyVisit(loaded.jobs);
   const anchor = loaded.jobs[0];
+  const linkAlreadySent = await landlordLinkEmailed(loaded.email);
 
   return (
     <AppShell>
       <PageHeader
         title={loaded.address}
-        description="Issues snag list for this property. View Board emails your properties link and opens the board."
+        description={snagListDescription(linkAlreadySent)}
         meta={`${loaded.jobs.length} ${loaded.jobs.length === 1 ? "issue" : "issues"}`}
         backHref={landlordPath(token)}
         backLabel="My properties"
         actions={
-          <ViewBoardButton jobId={anchor.id} knownEmail={loaded.email} />
+          <ViewBoardButton
+            jobId={anchor.id}
+            knownEmail={loaded.email}
+            linkAlreadySent={linkAlreadySent}
+          />
         }
       />
       <div className="max-w-3xl">

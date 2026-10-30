@@ -7,6 +7,9 @@ const COPY: Record<BoardEmailStatus, string> = {
     "Email is not configured (SES_FROM_EMAIL). Nothing was sent.",
   failed:
     "That email could not be delivered. Check the address and try again. The board is still open.",
+  not_emailed: "No email was sent.",
+  already_sent:
+    "This property is on their existing list. No further email was sent.",
 };
 
 /**
@@ -19,9 +22,13 @@ export function startBoardEmail(input: {
   recipientName?: string | null;
   configured: boolean;
   blocked: boolean;
+  alreadySent: boolean;
   queue: (task: () => Promise<void>) => void;
   send: (email: string, url: string, recipientName?: string | null) => Promise<void>;
 }): { emailStatus: BoardEmailStatus; message: string } {
+  if (input.alreadySent) {
+    return { emailStatus: "already_sent", message: COPY.already_sent };
+  }
   if (!input.configured) {
     return {
       emailStatus: "skipped_not_configured",

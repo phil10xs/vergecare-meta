@@ -19,6 +19,7 @@ describe("startBoardEmail", () => {
       ...base,
       configured: true,
       blocked: false,
+      alreadySent: false,
       queue: (task) => {
         tasks.push(task);
       },
@@ -41,6 +42,7 @@ describe("startBoardEmail", () => {
       ...base,
       configured: false,
       blocked: false,
+      alreadySent: false,
       queue: (task) => tasks.push(task),
       send: async () => {
         throw new Error("should not send");
@@ -56,11 +58,44 @@ describe("startBoardEmail", () => {
       ...base,
       configured: true,
       blocked: false,
+      alreadySent: false,
       queue: () => {
         throw new Error("schedule failed");
       },
       send: async () => undefined,
     });
     expect(result.emailStatus).toBe("failed");
+  });
+
+  it("second property does not send", () => {
+    const tasks: unknown[] = [];
+    const result = startBoardEmail({
+      ...base,
+      configured: true,
+      blocked: false,
+      alreadySent: true,
+      queue: (task) => tasks.push(task),
+      send: async () => {
+        throw new Error("should not send");
+      },
+    });
+    expect(result.emailStatus).toBe("already_sent");
+    expect(result.message).toMatch(/existing list/);
+    expect(result.message).not.toMatch(/Sending/);
+    expect(tasks).toHaveLength(0);
+  });
+
+  it("still sends the first time when no live link was emailed", () => {
+    const tasks: unknown[] = [];
+    const result = startBoardEmail({
+      ...base,
+      configured: true,
+      blocked: false,
+      alreadySent: false,
+      queue: (task) => tasks.push(task),
+      send: async () => undefined,
+    });
+    expect(result.emailStatus).toBe("scheduled");
+    expect(tasks).toHaveLength(1);
   });
 });

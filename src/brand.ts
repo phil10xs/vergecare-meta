@@ -10,7 +10,7 @@ export const brand = {
 export const howItWorks = [
   {
     title: "Check in",
-    body: "Film the issues you see in 20-second clips.",
+    body: "Do a video clip for each issue. Narrate as you film",
   },
   {
     title: "Get your Issues snag list",
