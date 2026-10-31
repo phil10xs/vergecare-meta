@@ -31,7 +31,7 @@ export default async function TrackPage({
         actions={
           <Link href="/request" className="flex w-full">
             <Button variant="accent" className="w-full">
-              New check-in
+              Check in for free
             </Button>
           </Link>
         }

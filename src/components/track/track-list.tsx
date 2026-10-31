@@ -24,7 +24,7 @@ export async function TrackList({ jobs }: { jobs: Job[] }) {
         title="No sessions yet"
         description="Record a check-in and its sessions will line up here."
         href="/request"
-        actionLabel="Record a check-in"
+        actionLabel="Check in for free"
       />
     );
   }

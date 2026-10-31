@@ -32,7 +32,7 @@ export default async function MyPropertiesPage({
         actions={
           <Link href="/request" className="flex w-full">
             <Button variant="accent" className="w-full">
-              New check-in
+              Check in for free
             </Button>
           </Link>
         }
@@ -42,7 +42,7 @@ export default async function MyPropertiesPage({
           title="No check-ins on this link yet"
           description="Properties show up here after you check in with this email."
           href="/request"
-          actionLabel="New check-in"
+          actionLabel="Check in for free"
         />
       ) : (
         <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">

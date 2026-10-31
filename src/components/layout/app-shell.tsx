@@ -17,7 +17,7 @@ export function AppShell({
           <BrandWordmark />
           {showCheckIn ? (
             <Link href="/request/checkin" className="shrink-0">
-              <Button variant="accent">Check in</Button>
+              <Button variant="accent">Check in for free</Button>
             </Link>
           ) : (
             <Link

@@ -50,7 +50,12 @@ export function WaitlistForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="mt-8 max-w-xl space-y-4" noValidate>
+    <form
+      id="waitlist-form"
+      onSubmit={onSubmit}
+      className="mt-8 max-w-xl scroll-mt-24 space-y-4"
+      noValidate
+    >
       <label className="block" htmlFor="waitlist-name">
         <span className="mb-1.5 block text-sm font-semibold">Name</span>
         <input

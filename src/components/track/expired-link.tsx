@@ -21,7 +21,7 @@ export function ExpiredBoardLink() {
         <div className="mt-6">
           <Link href="/request" className="inline-flex w-full justify-center sm:w-auto">
             <Button variant="accent" className="w-full sm:w-auto">
-              Start a check-in
+              Check in for free
             </Button>
           </Link>
         </div>
