@@ -24,3 +24,8 @@ uploads/
 
 # system
 .DS_Store
+
+# demo media (large renders stay out of git)
+demo/
+*.mp4
+*.mov

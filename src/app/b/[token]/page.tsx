@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { House } from "lucide-react";
+import { VergeCareMark } from "@/components/brand/vergecare-mark";
 import { AppShell } from "@/components/layout/app-shell";
 import { EmptyState, PageHeader } from "@/components/layout/page-header";
 import { ExpiredBoardLink } from "@/components/track/expired-link";
@@ -58,9 +58,7 @@ export default async function MyPropertiesPage({
               <li key={group.address} className="min-w-0">
                 <article className="flex h-full flex-col rounded-2xl border border-border bg-card px-4 py-4">
                   <div className="flex min-w-0 items-center gap-3">
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-                      <House className="h-5 w-5" aria-hidden />
-                    </span>
+                    <VergeCareMark decorative className="h-11 w-11 rounded-xl" />
                     <span className="min-w-0">
                       <span className="block font-display text-base font-bold tracking-tight break-words">
                         {group.address}

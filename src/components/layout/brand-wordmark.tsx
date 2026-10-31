@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { House } from "lucide-react";
 import { brand } from "@/brand";
+import { VergeCareMark } from "@/components/brand/vergecare-mark";
 import { cn } from "@/lib/utils";
 
-/** House mark, VergeCare, and a BETA pill. Accessible name stays “VergeCare, beta”. */
+/** VergeCare mark, wordmark, and a BETA pill. Accessible name stays “VergeCare, beta”. */
 export function BrandWordmark({ className }: { className?: string }) {
   return (
     <Link
@@ -14,9 +14,7 @@ export function BrandWordmark({ className }: { className?: string }) {
         className,
       )}
     >
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-        <House className="h-4 w-4" aria-hidden />
-      </span>
+      <VergeCareMark decorative className="h-9 w-9" />
       <span className="flex items-center gap-2">
         <span className="font-display text-base font-bold tracking-tight">
           {brand.shortName}

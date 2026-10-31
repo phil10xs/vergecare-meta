@@ -1,4 +1,5 @@
 import { brand, colors } from "@/brand";
+import { appUrl } from "@/lib/app-url";
 
 export function escapeHtml(value: string) {
   return value
@@ -28,9 +29,14 @@ export function emailBrandFooter(): string {
 }
 
 function emailHeaderHtml() {
+  const logoUrl = `${appUrl()}/brand/vergecare-96.png`;
   return `
                 <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                   <tr>
+                    <td style="vertical-align:middle;padding-right:12px;">
+                      <img src="${escapeAttr(logoUrl)}" width="40" height="40" alt=""
+                        style="display:block;border-radius:10px;" />
+                    </td>
                     <td style="vertical-align:middle;">
                       <div style="font-size:20px;line-height:1.2;font-weight:700;color:${colors.ink};letter-spacing:-0.02em;">
                         ${escapeHtml(brand.shortName)}
