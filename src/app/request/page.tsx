@@ -148,6 +148,16 @@ export default function PublicRequestPage() {
           <p className="mt-3 text-sm text-muted-foreground sm:text-base">
             Your caretaker watches every clip and builds the board.
           </p>
+          <div className="mt-8 overflow-hidden rounded-2xl border border-border bg-[#071617]">
+            <iframe
+              className="aspect-video w-full"
+              src="https://www.youtube-nocookie.com/embed/aHLs56BK9LY"
+              title="How VergeCare works"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              loading="lazy"
+            />
+          </div>
           <BoardPreview />
           <ol className="mt-8 grid gap-6 md:grid-cols-3">
             {howItWorks.map((step, index) => (
