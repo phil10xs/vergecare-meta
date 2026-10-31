@@ -67,13 +67,18 @@ export default function PublicRequestPage() {
 
       <main className="flex-1">
         <section className="px-3 pt-3 sm:px-5 sm:pt-5 lg:px-6 lg:pt-6">
-          <div className="relative isolate mx-auto flex min-h-[34rem] w-full max-w-7xl flex-col items-center overflow-hidden rounded-[1.75rem] bg-[#071617] text-[#f7faf9] shadow-[0_24px_80px_rgba(0,0,0,0.28)] sm:block sm:min-h-0">
-            <figure className="pointer-events-none relative order-last mt-2 h-80 w-full shrink-0 sm:static sm:mt-0 sm:h-auto sm:w-auto">
+          <div className="relative isolate mx-auto grid w-full max-w-7xl overflow-hidden rounded-[1.75rem] bg-[#071617] text-[#f7faf9] shadow-[0_24px_80px_rgba(0,0,0,0.28)]">
+            {/* Keeps the photo's 3:2 frame on wider screens without capping the copy. */}
+            <div
+              aria-hidden
+              className="col-start-1 row-start-1 hidden w-full self-start aspect-[3/2] sm:block"
+            />
+            <figure className="col-start-1 row-start-2 mt-2 h-80 w-full sm:absolute sm:inset-0 sm:row-start-1 sm:mt-0 sm:h-full">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/images/checkin-after.jpg"
                 alt="Cared-for house with fixed wall, tap and window"
-                className="h-full w-full object-cover object-center sm:h-auto sm:object-fill sm:object-[right_center]"
+                className="h-full w-full object-cover object-center sm:object-[right_center]"
               />
               <figcaption className="sr-only">
                 The cared-for house, with the fixed wall, tap and window shown beside it
@@ -81,12 +86,12 @@ export default function PublicRequestPage() {
             </figure>
             <div
               aria-hidden
-              className="absolute inset-0 hidden bg-[linear-gradient(100deg,rgba(7,22,23,0.9)_0%,rgba(7,22,23,0.78)_26%,rgba(7,22,23,0.42)_44%,rgba(7,22,23,0.08)_58%,transparent_68%)] sm:block"
+              className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(100deg,rgba(7,22,23,0.9)_0%,rgba(7,22,23,0.78)_26%,rgba(7,22,23,0.42)_44%,rgba(7,22,23,0.08)_58%,transparent_68%)] sm:block"
             />
 
-            <div className="relative z-10 w-full min-w-0 px-5 py-8 sm:absolute sm:inset-y-0 sm:left-0 sm:flex sm:w-[56%] sm:items-center sm:px-10 sm:py-10 lg:w-[50%] lg:px-14">
+            <div className="relative z-10 col-start-1 row-start-1 w-full min-w-0 self-center px-5 py-8 sm:w-[64%] sm:px-10 sm:py-10 md:w-[56%] lg:w-[50%] lg:px-14">
               <div className="min-w-0">
-              <h1 className="max-w-3xl font-display text-[1.85rem] font-semibold leading-[1.08] tracking-[-0.045em] text-white sm:text-[2.35rem] lg:text-[3rem] lg:leading-[1.06] xl:text-[3.4rem]">
+              <h1 className="max-w-3xl text-balance font-display text-[1.85rem] font-semibold leading-[1.08] tracking-[-0.045em] text-white md:text-[2.35rem] lg:text-[3rem] lg:leading-[1.06] xl:text-[3.4rem]">
                 The AI Caretaker for your property.
               </h1>
               <p className="mt-4 max-w-2xl font-display text-lg font-bold leading-snug tracking-[-0.03em] text-white sm:text-xl lg:text-[1.65rem]">
