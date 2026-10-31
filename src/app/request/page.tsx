@@ -95,8 +95,7 @@ export default function PublicRequestPage() {
               </p>
               <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/85 sm:text-base">
                 Damp walls, leaky pipes, weedy gardens — across one home or a
-                whole portfolio. Tenants film what they see; you track every
-                fix to done.
+                whole portfolio.
               </p>
               <Link
                 href="/request/checkin"
