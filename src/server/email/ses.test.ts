@@ -48,7 +48,7 @@ describe("sendEmail", () => {
     await expect(
       sendEmail({
         to: "landlord@acme.co",
-        subject: "Your VergeSnag link",
+        subject: "Your VergeCare link",
         html: "<p>Hi</p>",
         text: "Hi",
       }),
@@ -58,7 +58,7 @@ describe("sendEmail", () => {
 
   it("sends through SES when a sender is configured", async () => {
     process.env.SES_FROM_EMAIL = "noreply@goverge.app";
-    process.env.SES_FROM_NAME = "VergeSnag";
+    process.env.SES_FROM_NAME = "VergeCare";
     sendMock.mockImplementation(async (command: MockCommand) => {
       if (command.kind === "GetSuppressedDestination") throw notFound();
       return { MessageId: "mid" };
@@ -66,14 +66,14 @@ describe("sendEmail", () => {
     const { sendEmail } = await import("./ses");
     await sendEmail({
       to: "landlord@acme.co",
-      subject: "Your VergeSnag link",
+      subject: "Your VergeCare link",
       html: "<p>Hi</p>",
       text: "Hi",
     });
     const sent = sendMock.mock.calls
       .map((call) => call[0] as MockCommand)
       .find((command) => command.kind === "SendEmail");
-    expect(sent?.input.FromEmailAddress).toBe("VergeSnag <noreply@goverge.app>");
+    expect(sent?.input.FromEmailAddress).toBe("VergeCare <noreply@goverge.app>");
     expect(sent?.input.Destination).toEqual({
       ToAddresses: ["landlord@acme.co"],
     });
@@ -85,7 +85,7 @@ describe("sendEmail", () => {
     await expect(
       sendEmail({
         to: "person@yopmail.com",
-        subject: "Your VergeSnag link",
+        subject: "Your VergeCare link",
         html: "<p>Hi</p>",
         text: "Hi",
       }),

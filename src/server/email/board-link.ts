@@ -12,11 +12,11 @@ export function boardLinkEmailContent(input: {
 }) {
   const who = input.recipientName?.trim();
   const hello = who ? `Hello ${who},` : "Hello,";
-  const subject = "Your VergeSnag link";
+  const subject = "Your VergeCare link";
   const text = [
     hello,
     "",
-    "Here is your private VergeSnag link. It opens every property you have checked in.",
+    "Here is your private VergeCare link. It opens every property you have checked in.",
     "",
     `Open my properties: ${input.propertiesUrl}`,
     "",
@@ -29,7 +29,7 @@ export function boardLinkEmailContent(input: {
   const bodyHtml = `
       <p style="margin:0 0 16px;">${escapeHtml(hello)}</p>
       <p style="margin:0 0 16px;">
-        Here is your private <strong>VergeSnag</strong> link. It opens every
+        Here is your private <strong>VergeCare</strong> link. It opens every
         property you have checked in.
       </p>
       <p style="margin:0 0 20px;">

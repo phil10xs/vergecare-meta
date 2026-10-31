@@ -1,11 +1,11 @@
-# VergeSnag (Beta)
+# VergeCare (Beta)
 
-Property check-ins for the Meta AI Global Hackathon (indie track),
-powered by the VergeSnag AI engine. Check in on your property, get an
-organized Issues snag list & Issues & Bills Tracker Board in under a minute — every visit
-remembered forever.
+Property check-ins for the Meta AI Global Hackathon (indie track).
+Check in on your property, get an organized Issues snag list & Issues
+& Bills Tracker Board in under a minute — every visit remembered
+forever.
 
-Standalone project with its own VergeSnag brand tokens, button
+Standalone project with its own VergeCare brand tokens, button
 variants, status badges, page header, and list hero.
 
 ## Stack
@@ -53,7 +53,7 @@ src/app            Routes: / (→ /request), /request (check-in landing),
                    /request/checkin (film + submit), /request/[id] (visit report),
                    /track (Issues snag list + Issues & Bills Tracker Board), /b/[token] (magic-link board),
                    /api/health, /api/media
-src/components     VergeSnag UI: button, status badges, page header, list hero
+src/components     VergeCare UI: button, status badges, page header, list hero
 src/lib            Trade inference, report sections, session grouping
 src/server         Reporting, board links, and media storage logic
 src/db             Drizzle client + schema (job, site_report, site_media, …)

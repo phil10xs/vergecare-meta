@@ -3,12 +3,12 @@ import { House } from "lucide-react";
 import { brand } from "@/brand";
 import { cn } from "@/lib/utils";
 
-/** House mark, VergeSnag, and a BETA pill. Accessible name stays “VergeSnag, beta”. */
+/** House mark, VergeCare, and a BETA pill. Accessible name stays “VergeCare, beta”. */
 export function BrandWordmark({ className }: { className?: string }) {
   return (
     <Link
       href="/request"
-      aria-label="VergeSnag, beta"
+      aria-label="VergeCare, beta"
       className={cn(
         "flex min-h-11 shrink-0 items-center gap-2.5 whitespace-nowrap rounded-lg",
         className,

@@ -159,7 +159,7 @@ NEXT_PUBLIC_APP_URL=${APP_URL}
 APP_URL=${APP_URL}
 META_MODEL_API_KEY=${META_KEY}
 SES_FROM_EMAIL=
-SES_FROM_NAME=VergeSnag
+SES_FROM_NAME=VergeCare
 AWS_REGION=${REGION}
 AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
@@ -180,7 +180,7 @@ append_env_if_missing() {
 }
 append_env_if_missing APP_URL ""
 append_env_if_missing SES_FROM_EMAIL ""
-append_env_if_missing SES_FROM_NAME "VergeSnag"
+append_env_if_missing SES_FROM_NAME "VergeCare"
 append_env_if_missing AWS_REGION "$REGION"
 append_env_if_missing AWS_ACCESS_KEY_ID ""
 append_env_if_missing AWS_SECRET_ACCESS_KEY ""

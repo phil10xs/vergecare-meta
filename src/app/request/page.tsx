@@ -87,10 +87,11 @@ export default function PublicRequestPage() {
             <div className="relative z-10 w-full min-w-0 px-5 py-8 sm:absolute sm:inset-y-0 sm:left-0 sm:flex sm:w-[56%] sm:items-center sm:px-10 sm:py-10 lg:w-[50%] lg:px-14">
               <div className="min-w-0">
               <h1 className="max-w-3xl font-display text-[1.85rem] font-semibold leading-[1.08] tracking-[-0.045em] text-white sm:text-[2.35rem] lg:text-[3rem] lg:leading-[1.06] xl:text-[3.4rem]">
-                Every visit, remembered.
+                The AI Caretaker for your property.
               </h1>
               <p className="mt-4 max-w-2xl font-display text-lg font-bold leading-snug tracking-[-0.03em] text-white sm:text-xl lg:text-[1.65rem]">
-                Film the issue. Track the bill. All from one check-in.
+                Film &amp; narrate the issue. Track the bill. All from one
+                check-in.
               </p>
               <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/85 sm:text-base">
                 Damp walls, leaky pipes, weedy gardens — across one home or a
@@ -111,7 +112,7 @@ export default function PublicRequestPage() {
               </Link>
               <ul
                 className="mt-8 flex flex-wrap gap-2"
-                aria-label="Who VergeSnag is for"
+                aria-label="Who VergeCare is for"
               >
                 {AUDIENCE.map((label) => (
                   <li key={label}>
@@ -141,7 +142,7 @@ export default function PublicRequestPage() {
             From a short clip to a board you can follow
           </h2>
           <p className="mt-3 text-sm text-muted-foreground sm:text-base">
-            Powered by {brand.engine}.
+            Your caretaker watches every clip and builds the board.
           </p>
           <BoardPreview />
           <ol className="mt-8 grid gap-6 md:grid-cols-3">
@@ -158,8 +159,9 @@ export default function PublicRequestPage() {
                 </p>
                 {index === 0 ? (
                   <p className="mt-2 text-base leading-relaxed text-muted-foreground">
-                    Film what you see, and {brand.engine} builds your Issues
-                    snag list and your property&apos;s Bills Tracker.
+                    Film &amp; narrate what you see, and {brand.engine} builds
+                    your Issues snag list and your property&apos;s Bills
+                    Tracker.
                   </p>
                 ) : null}
               </li>
@@ -168,7 +170,7 @@ export default function PublicRequestPage() {
         </section>
 
         <section
-          aria-label="Before and after VergeSnag"
+          aria-label="Before and after VergeCare"
           className={`${frame} pb-12 sm:pb-16`}
         >
           <h2 className="font-display text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">
@@ -208,6 +210,125 @@ export default function PublicRequestPage() {
               </figcaption>
             </figure>
           </div>
+        </section>
+
+        <section
+          aria-label="What VergeCare looks after"
+          className={`${frame} pb-12 sm:pb-16`}
+        >
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--gv-teal-bright)]">
+            What VergeCare looks after
+          </p>
+          <h2 className="mt-3 max-w-2xl font-display text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">
+            Issues and bills today. Rent, docs, and chats coming soon.
+          </h2>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2">
+            <div className="rounded-2xl border border-border bg-card px-4 py-4 sm:px-5">
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--gv-teal-bright)]">
+                Live now
+              </p>
+              <ul className="mt-3 space-y-3 text-base leading-relaxed">
+                <li>
+                  <span className="font-semibold">Issues. </span>
+                  <span className="text-muted-foreground">
+                    Film a clip, get a costed snag list, track every fix to
+                    done.
+                  </span>
+                </li>
+                <li>
+                  <span className="font-semibold">Bills. </span>
+                  <span className="text-muted-foreground">
+                    Every bill tracked until it&apos;s paid.
+                  </span>
+                </li>
+                <li>
+                  <span className="font-semibold">Clips kept. </span>
+                  <span className="text-muted-foreground">
+                    Every video you upload stays with the property. Giving her
+                    a memory.
+                  </span>
+                </li>
+              </ul>
+            </div>
+            <div className="rounded-2xl border border-border bg-card px-4 py-4 sm:px-5">
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground">
+                Coming soon
+              </p>
+              <ul className="mt-3 space-y-3 text-base leading-relaxed">
+                <li>
+                  <span className="font-semibold">Rent. </span>
+                  <span className="text-muted-foreground">
+                    Rent due, paid, and chased — on the same board.
+                  </span>
+                </li>
+                <li>
+                  <span className="font-semibold">Docs. </span>
+                  <span className="text-muted-foreground">
+                    Certificates, contracts, and inventories — upload and keep
+                    them with the property.
+                  </span>
+                </li>
+                <li>
+                  <span className="font-semibold">Chats. </span>
+                  <span className="text-muted-foreground">
+                    Owner, tenant, and tradesman talking around the fix — not
+                    lost threads.
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section
+          aria-label="Why VergeCare"
+          className={`${frame} pb-12 sm:pb-16`}
+        >
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--gv-teal-bright)]">
+            Why VergeCare
+          </p>
+          <h2 className="mt-3 max-w-2xl font-display text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">
+            Perfect for care across multiple homes and portfolios.
+          </h2>
+          <ul className="mt-8 max-w-2xl space-y-5 text-base leading-relaxed sm:text-lg">
+            <li>
+              <span className="font-semibold">
+                One check-in. Every issue looked after.{" "}
+              </span>
+              <span className="text-muted-foreground">
+                Film &amp; narrate every issue in a single visit; your
+                caretaker lists each one with its trade and likely cost.
+              </span>
+            </li>
+            <li>
+              <span className="font-semibold">
+                Follow every bill to paid.{" "}
+              </span>
+              <span className="text-muted-foreground">
+                Update the price on the board and watch each fix move to done.
+              </span>
+            </li>
+            <li>
+              <span className="font-semibold">
+                Bidding and clips-to-pay are next.{" "}
+              </span>
+              <span className="text-muted-foreground">
+                Name your price with tradesmen, then pay from the board.
+              </span>
+            </li>
+          </ul>
+          <Link
+            href="/request/checkin"
+            className="mt-8 flex w-full sm:inline-flex sm:w-auto"
+          >
+            <Button
+              variant="accent"
+              size="lg"
+              className="h-14 w-full px-8 text-lg sm:w-auto"
+            >
+              Start your check-in
+            </Button>
+          </Link>
         </section>
 
         <section

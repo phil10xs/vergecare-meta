@@ -31,7 +31,7 @@ export async function sendBoardLinkEmail(
       subject: content.subject,
       html: content.html,
       text: content.text,
-      fromName: "VergeSnag",
+      fromName: "VergeCare",
     });
     return {
       status: "sent",

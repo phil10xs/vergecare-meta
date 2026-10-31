@@ -52,7 +52,7 @@ function formatFromDisplayName(name: string) {
 function fromAddress(fromName?: string) {
   const email = process.env.SES_FROM_EMAIL?.trim();
   if (!email) throw new Error("SES_FROM_EMAIL is not configured");
-  const name = fromName?.trim() || process.env.SES_FROM_NAME?.trim() || "VergeSnag";
+  const name = fromName?.trim() || process.env.SES_FROM_NAME?.trim() || "VergeCare";
   return `${formatFromDisplayName(name)} <${email}>`;
 }
 

@@ -124,12 +124,12 @@ export async function createPublicRequestAction(
   });
   await saveMediaFiles(created.id, groups[0] ?? [], null);
   await applyInference(created.id, hintedTrade);
-  await generateReport(created.id, "VergeSnag", { markSubmitted: false });
+  await generateReport(created.id, "VergeCare", { markSubmitted: false });
   for (const group of groups.slice(1)) {
     const sibling = await createPublicRequest({ ...base, description: "" });
     await saveMediaFiles(sibling.id, group, null);
     await applyInference(sibling.id, hintedTrade);
-    await generateReport(sibling.id, "VergeSnag", { markSubmitted: false });
+    await generateReport(sibling.id, "VergeCare", { markSubmitted: false });
   }
   revalidatePath("/track");
   redirect(`/request/${created.id}?new=1`);

@@ -57,7 +57,7 @@ function emailHtmlFooter() {
   `.trim();
 }
 
-/** VergeSnag shell: header, body, footer. Same card structure as GoVerge mail. */
+/** VergeCare shell: header, body, footer. Same card structure as GoVerge mail. */
 export function renderEmailLayout(input: {
   bodyHtml: string;
   preheader?: string;

@@ -100,7 +100,7 @@ export default async function PublicTrackPage({
     } else {
       reports.set(
         session.id,
-        await generateReport(session.id, session.requesterName ?? "VergeSnag", {
+        await generateReport(session.id, session.requesterName ?? "VergeCare", {
           markSubmitted: false,
         }),
       );
