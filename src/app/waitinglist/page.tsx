@@ -33,7 +33,7 @@ export default function WaitingListPage() {
           <div className="mt-8 max-w-3xl overflow-hidden rounded-2xl border border-border bg-[#071617]">
             <iframe
               className="aspect-video w-full"
-              src="https://www.youtube-nocookie.com/embed/qDxQgBvIJ8A"
+              src="https://www.youtube-nocookie.com/embed/ehPcJFHetC0"
               title="How VergeCare works"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
