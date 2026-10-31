@@ -62,6 +62,7 @@ export const siteMedia = pgTable("site_media", {
   transcript: text("transcript"),
   visualDescription: text("visual_description"),
   detectedTrade: text("detected_trade"),
+  regions: text("regions"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

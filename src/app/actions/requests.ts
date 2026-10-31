@@ -27,6 +27,7 @@ import { sessionAddress } from "@/lib/sessions";
 import { groupFilesBySession } from "@/lib/media-rules";
 import { TRADE_OPTIONS } from "@/lib/chat-parse";
 import { analyzeVideo, assessIssue } from "@/server/analyze-video";
+import { conceptFromAnalysis, localizeIssue } from "@/server/sam";
 import { saveUpload } from "@/server/media-store";
 
 function formText(formData: FormData, key: string): string | null {
@@ -38,6 +39,7 @@ async function saveMediaFiles(
   jobId: string,
   files: File[],
   narration: string | null,
+  frameByVideo: Map<File, File | undefined>,
 ): Promise<void> {
   for (const file of files) {
     const bytes = Buffer.from(await file.arrayBuffer());
@@ -62,6 +64,27 @@ async function saveMediaFiles(
           analysis.description,
           analysis.trade,
         );
+        const frame = frameByVideo.get(file);
+        if (
+          frame &&
+          frame.type.startsWith("image/") &&
+          frame.size > 0 &&
+          frame.size <= 2 * 1024 * 1024
+        ) {
+          const concept = conceptFromAnalysis(analysis);
+          if (concept) {
+            const regions = await localizeIssue(
+              Buffer.from(await frame.arrayBuffer()),
+              concept,
+            );
+            if (regions) {
+              await db
+                .update(siteMedia)
+                .set({ regions: JSON.stringify(regions) })
+                .where(eq(siteMedia.id, row.id));
+            }
+          }
+        }
         const assessment = await assessIssue(
           analysis.transcript,
           analysis.description,
@@ -84,6 +107,13 @@ async function saveMediaFiles(
 function mediaFiles(formData: FormData): File[] {
   return formData
     .getAll("media")
+    .filter((entry): entry is File => entry instanceof File && entry.size > 0);
+}
+
+/** Silent stills captured alongside videos for SAM grounding, by video order. */
+function frameFiles(formData: FormData): File[] {
+  return formData
+    .getAll("frames")
     .filter((entry): entry is File => entry instanceof File && entry.size > 0);
 }
 
@@ -110,6 +140,15 @@ export async function createPublicRequestAction(
     pickedTrade !== "Other"
       ? pickedTrade
       : null;
+  const videos = files.filter((file) => file.type.startsWith("video/"));
+  const frameByIndex = new Map<number, File>();
+  for (const frame of frameFiles(formData)) {
+    const match = /^sam-frame-(\d+)\.jpg$/.exec(frame.name);
+    if (match?.[1] !== undefined) frameByIndex.set(Number(match[1]), frame);
+  }
+  const frameByVideo = new Map<File, File | undefined>(
+    videos.map((file, index) => [file, frameByIndex.get(index)]),
+  );
   const groups = groupFilesBySession(files);
   const base = {
     requesterName: null,
@@ -122,12 +161,12 @@ export async function createPublicRequestAction(
     ...base,
     description: note ?? "See photos and video.",
   });
-  await saveMediaFiles(created.id, groups[0] ?? [], null);
+  await saveMediaFiles(created.id, groups[0] ?? [], null, frameByVideo);
   await applyInference(created.id, hintedTrade);
   await generateReport(created.id, "VergeCare", { markSubmitted: false });
   for (const group of groups.slice(1)) {
     const sibling = await createPublicRequest({ ...base, description: "" });
-    await saveMediaFiles(sibling.id, group, null);
+    await saveMediaFiles(sibling.id, group, null, frameByVideo);
     await applyInference(sibling.id, hintedTrade);
     await generateReport(sibling.id, "VergeCare", { markSubmitted: false });
   }
