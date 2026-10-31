@@ -42,7 +42,7 @@ function CheckInLink({ href }: { href: string }) {
   );
 }
 
-export function CaretakerHero({ checkInHref }: { checkInHref: string }) {
+export function CaretakerHero({ checkInHref }: { checkInHref?: string }) {
   return (
     <section className="px-3 pt-3 sm:px-5 sm:pt-5 lg:px-6 lg:pt-6">
       <div className="relative isolate mx-auto grid w-full max-w-7xl overflow-hidden rounded-[1.75rem] bg-[#071617] text-[#f7faf9] shadow-[0_24px_80px_rgba(0,0,0,0.28)]">
@@ -80,7 +80,7 @@ export function CaretakerHero({ checkInHref }: { checkInHref: string }) {
               Damp walls, leaky pipes, weedy gardens — across one home or a
               whole portfolio.
             </p>
-            <CheckInLink href={checkInHref} />
+            {checkInHref ? <CheckInLink href={checkInHref} /> : null}
             <ul
               className="mt-8 flex flex-wrap gap-2"
               aria-label="Who VergeCare is for"
