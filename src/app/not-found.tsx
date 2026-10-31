@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Page not found" };
 
 export default function NotFound() {
   return (
-    <AppShell>
+    <AppShell showCheckIn={false}>
       <div className="mx-auto max-w-lg py-8 text-center sm:py-16">
         <h1 className="font-display text-3xl font-bold tracking-tight">
           Page not found
