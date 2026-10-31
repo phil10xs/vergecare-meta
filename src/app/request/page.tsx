@@ -59,7 +59,7 @@ export default function PublicRequestPage() {
       <header className="sticky top-0 z-40 border-b border-border/70 bg-background/80 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
         <div className={`${frame} flex h-16 items-center justify-between gap-3`}>
           <BrandWordmark />
-          <Link href="/request/checkin" className="shrink-0">
+          <Link href="/waitinglist" className="shrink-0">
             <Button variant="accent">Check in</Button>
           </Link>
         </div>
@@ -103,7 +103,7 @@ export default function PublicRequestPage() {
                 whole portfolio.
               </p>
               <Link
-                href="/request/checkin"
+                href="/waitinglist"
                 className="mt-6 flex w-full sm:inline-flex sm:w-auto"
               >
                 <Button
@@ -332,7 +332,7 @@ export default function PublicRequestPage() {
             </li>
           </ul>
           <Link
-            href="/request/checkin"
+            href="/waitinglist"
             className="mt-8 flex w-full sm:inline-flex sm:w-auto"
           >
             <Button

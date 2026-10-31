@@ -107,6 +107,18 @@ export const boardToken = pgTable("board_token", {
     .defaultNow(),
 });
 
+// Beta waitlist. Contact is an email or phone, stored in a normalized form
+// so the same person joining again is already on the list.
+export const waitlist = pgTable("waitlist", {
+  contact: text("contact").primaryKey(),
+  name: text("name").notNull(),
+  businessName: text("business_name").notNull(),
+  address: text("address").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
 export type Job = typeof job.$inferSelect;
 export type NewJob = typeof job.$inferInsert;
 export type BoardToken = typeof boardToken.$inferSelect;
@@ -114,3 +126,4 @@ export type SiteReport = typeof siteReport.$inferSelect;
 export type NewSiteReport = typeof siteReport.$inferInsert;
 export type SiteMedia = typeof siteMedia.$inferSelect;
 export type ChecklistItem = typeof checklistItem.$inferSelect;
+export type WaitlistEntry = typeof waitlist.$inferSelect;
