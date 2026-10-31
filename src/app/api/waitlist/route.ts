@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import { parseWaitlist } from "@/lib/waitlist";
+import {
+  isWaitlistEmail,
+  sendWaitlistWelcome,
+} from "@/server/email/waitlist-welcome";
 
 export async function POST(request: Request) {
   let body: unknown;
@@ -35,10 +39,18 @@ export async function POST(request: Request) {
     const { db } = await import("@/db");
     const { waitlist } = await import("@/db/schema");
     // A repeat contact is already on the list, so confirm instead of erroring.
-    await db
+    // RETURNING is empty on conflict, so a second signup does not email again.
+    const inserted = await db
       .insert(waitlist)
       .values(parsed.data)
-      .onConflictDoNothing({ target: waitlist.contact });
+      .onConflictDoNothing({ target: waitlist.contact })
+      .returning({ contact: waitlist.contact });
+    if (inserted.length > 0 && isWaitlistEmail(parsed.data.contact)) {
+      await sendWaitlistWelcome({
+        name: parsed.data.name,
+        email: parsed.data.contact,
+      });
+    }
     return NextResponse.json({ ok: true, stored: true });
   } catch {
     return NextResponse.json(
