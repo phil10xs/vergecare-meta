@@ -29,7 +29,7 @@ describe("appUrl", () => {
     expect(appUrl()).toBe("http://localhost:3002");
 
     delete process.env.NEXT_PUBLIC_APP_URL;
-    expect(appUrl()).toBe("https://demo-vergesnag.goverge.app");
+    expect(appUrl()).toBe("https://demo-vergecare.goverge.app");
   });
 });
 

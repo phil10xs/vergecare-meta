@@ -19,7 +19,7 @@ const body = Sora({
 export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") ||
-      "http://localhost:3002",
+      "https://demo-vergecare.goverge.app",
   ),
   title: {
     default: brand.name,

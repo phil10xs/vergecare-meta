@@ -1,5 +1,5 @@
 /** Public origin for magic links. Runtime APP_URL wins so the host can change without a rebuild. */
-export const PUBLIC_ORIGIN = "https://demo-vergesnag.goverge.app";
+export const PUBLIC_ORIGIN = "https://demo-vergecare.goverge.app";
 
 export function appUrl(): string {
   const configured = [process.env.APP_URL, process.env.NEXT_PUBLIC_APP_URL]
