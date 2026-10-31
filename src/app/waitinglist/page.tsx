@@ -3,9 +3,32 @@ import { brand } from "@/brand";
 import { BrandWordmark } from "@/components/layout/brand-wordmark";
 import { WaitlistForm } from "@/components/waitlist/waitlist-form";
 
+const shareTitle = "VergeCare waiting list";
+const shareDescription = `Join the ${brand.shortName} waitlist. We'll email you when beta is live.`;
+const shareImage = {
+  url: "https://vergecare.goverge.app/images/vergecare-waitlist-thumbnail.jpg",
+  width: 1024,
+  height: 576,
+  alt: shareTitle,
+  type: "image/jpeg",
+} as const;
+
 export const metadata: Metadata = {
-  title: "Waitlist",
-  description: `Join the ${brand.shortName} waitlist. We'll email you when beta is live.`,
+  title: { absolute: shareTitle },
+  description: shareDescription,
+  openGraph: {
+    title: shareTitle,
+    description: shareDescription,
+    url: "https://vergecare.goverge.app/waitinglist",
+    type: "website",
+    images: [shareImage],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: shareTitle,
+    description: shareDescription,
+    images: [shareImage],
+  },
 };
 
 const frame = "mx-auto w-full max-w-7xl px-3 sm:px-5 lg:px-6";
