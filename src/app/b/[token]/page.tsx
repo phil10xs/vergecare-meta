@@ -1,10 +1,11 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { House } from "lucide-react";
 import { AppShell } from "@/components/layout/app-shell";
 import { EmptyState, PageHeader } from "@/components/layout/page-header";
 import { ExpiredBoardLink } from "@/components/track/expired-link";
 import { Button } from "@/components/ui/button";
-import { propertySnagPath } from "@/lib/app-url";
+import { propertyBoardPath, propertySnagPath } from "@/lib/app-url";
 import { groupSessionsByPropertyVisit } from "@/lib/sessions";
 import { getLandlordAccess } from "@/server/board-access";
 
@@ -26,7 +27,7 @@ export default async function MyPropertiesPage({
     <AppShell>
       <PageHeader
         title="My properties"
-        description="Every property on this link. Open a snag list, then View Board to move issues. No password."
+        description="Every property on this link. Open a snag list or board to move issues. No password."
         meta={`${groups.length} ${groups.length === 1 ? "property" : "properties"}`}
         actions={
           <Link href="/request" className="flex w-full">
@@ -45,27 +46,62 @@ export default async function MyPropertiesPage({
         />
       ) : (
         <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-          {groups.map((group) => (
-            <li key={group.address} className="min-w-0">
-              <Link
-                href={propertySnagPath(token, group.address)}
-                className="flex h-full min-h-16 items-center justify-between gap-3 rounded-2xl border border-border bg-card px-4 py-4 hover:bg-secondary/40"
-              >
-                <span className="min-w-0">
-                  <span className="block font-display text-base font-bold tracking-tight break-words">
-                    {group.address}
-                  </span>
-                  <span className="mt-1 block text-sm text-muted-foreground">
-                    {group.sessionCount}{" "}
-                    {group.sessionCount === 1 ? "issue" : "issues"}
-                  </span>
-                </span>
-                <span className="shrink-0 text-sm font-semibold text-link">
-                  Snag list
-                </span>
-              </Link>
-            </li>
-          ))}
+          {groups.map((group) => {
+            const sessions = group.visits.flatMap((visit) => visit.sessions);
+            const openCount = sessions.filter(
+              (session) =>
+                session.status !== "paid" &&
+                session.status !== "cancelled",
+            ).length;
+            const lastVisit = group.visits[0]?.label ?? "No visits yet";
+            return (
+              <li key={group.address} className="min-w-0">
+                <article className="flex h-full flex-col rounded-2xl border border-border bg-card px-4 py-4">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+                      <House className="h-5 w-5" aria-hidden />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block font-display text-base font-bold tracking-tight break-words">
+                        {group.address}
+                      </span>
+                      <span className="mt-0.5 block text-sm text-muted-foreground">
+                        {group.sessionCount}{" "}
+                        {group.sessionCount === 1 ? "issue" : "issues"} ·{" "}
+                        {openCount} open · Last visit {lastVisit}
+                      </span>
+                    </span>
+                  </div>
+                  <nav
+                    aria-label={`${group.address} sections`}
+                    className="mt-3 flex items-center gap-1 border-t border-border pt-3 text-sm font-semibold"
+                  >
+                    <Link
+                      href={propertySnagPath(token, group.address)}
+                      className="inline-flex min-h-11 flex-1 items-center justify-center rounded-lg text-link hover:underline"
+                    >
+                      Snag list
+                    </Link>
+                    <Link
+                      href={propertyBoardPath(token, group.address)}
+                      className="inline-flex min-h-11 flex-1 items-center justify-center rounded-lg text-link hover:underline"
+                    >
+                      Board
+                    </Link>
+                    <span
+                      aria-disabled="true"
+                      className="inline-flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-lg text-muted-foreground"
+                    >
+                      Docs
+                      <span className="rounded-full border border-border px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                        Soon
+                      </span>
+                    </span>
+                  </nav>
+                </article>
+              </li>
+            );
+          })}
         </ul>
       )}
       <p className="mt-6 text-sm text-muted-foreground">
