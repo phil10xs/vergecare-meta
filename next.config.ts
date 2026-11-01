@@ -2,7 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
-  output: "standalone",
+  // Docker images use standalone output. Vercel serves the default Next build.
+  ...(process.env.VERCEL ? {} : { output: "standalone" as const }),
   serverExternalPackages: ["@aws-sdk/client-sesv2"],
   experimental: {
     serverActions: {

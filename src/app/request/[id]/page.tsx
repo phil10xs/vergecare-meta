@@ -79,10 +79,11 @@ export default async function PublicTrackPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ new?: string }>;
+  searchParams: Promise<{ new?: string; from?: string }>;
 }) {
   const { id } = await params;
-  const { new: fresh } = await searchParams;
+  const { new: fresh, from } = await searchParams;
+  const fromBoard = from === "board";
   const anchor = await getPublicJob(id);
   if (!anchor || anchor.source !== "public") notFound();
 
@@ -186,6 +187,8 @@ export default async function PublicTrackPage({
         meta={`${formatVisitDay(day)} · ${sessions.length} ${
           sessions.length === 1 ? "issue" : "issues"
         }${budget ? ` · budget ${formatBudget(budget)}` : ""}`}
+        backHref={fromBoard ? "/home" : undefined}
+        backLabel="Back to board"
       />
       <div className="mb-6">
         <JobStatusBadge status={visitStatus(sessions)} />

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { createPublicRequestAction } from "@/app/actions/requests";
 import { brand, howItWorks } from "@/brand";
 import { CapturePicker } from "@/components/capture/capture-picker";
@@ -8,11 +9,26 @@ import { SubmitCheckinButton } from "@/components/request/submit-checkin-button"
 
 export const metadata: Metadata = { title: "New check-in" };
 
-export default function CheckinPage() {
+export default async function CheckinPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ from?: string; address?: string }>;
+}) {
+  const params = await searchParams;
+  const fromBoard = params.from === "board";
+  const address = params.address?.trim() ?? "";
   return (
     <AppShell showCheckIn={false}>
       <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,32rem)] lg:gap-12 xl:gap-16">
         <div className="min-w-0 max-w-prose">
+          {fromBoard ? (
+            <Link
+              href="/home"
+              className="mb-3 inline-flex min-h-11 items-center text-sm font-semibold text-link hover:underline"
+            >
+              Back to board
+            </Link>
+          ) : null}
           <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
             Your check-in
           </h1>
@@ -36,6 +52,7 @@ export default function CheckinPage() {
         </div>
 
         <CheckinForm action={createPublicRequestAction}>
+          {fromBoard ? <input type="hidden" name="from" value="board" /> : null}
           <label className="block">
             <span className="mb-1.5 block text-sm font-semibold">
               Property address
@@ -45,6 +62,7 @@ export default function CheckinPage() {
               required
               autoComplete="street-address"
               placeholder="e.g. 12 Rosebank Road, Manchester"
+              defaultValue={address}
               className="text-field"
             />
           </label>

@@ -1,4 +1,4 @@
-# VergeSnag live deploy (internal branch only)
+# VergeCare live deploy (internal branch only)
 
 Single EC2 box runs Docker Compose: Postgres + Next.js app + Caddy.
 Same IAM user and deploy pattern already in use, smaller
@@ -42,7 +42,7 @@ Magic-link mail uses SES. In `deploy/.secrets/app.env` (never commit it) set:
 
 - `APP_URL` and `NEXT_PUBLIC_APP_URL` to `https://demo-vergesnag.goverge.app`
 - `SES_FROM_EMAIL` — a verified `goverge.app` sender (GoVerge uses `SES_FROM_EMAIL`)
-- `SES_FROM_NAME=VergeSnag`
+- `SES_FROM_NAME=VergeCare`
 - `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` — existing AWS credentials
 - `SES_CONFIGURATION_SET` — optional, same configuration set as GoVerge if you already use one
 

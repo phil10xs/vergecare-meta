@@ -2,6 +2,7 @@ import {
   boolean,
   integer,
   pgTable,
+  primaryKey,
   text,
   timestamp,
   uuid,
@@ -115,6 +116,62 @@ export const waitlist = pgTable("waitlist", {
   name: text("name").notNull(),
   businessName: text("business_name").notNull(),
   address: text("address").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
+// Signed-in account. Role is who they are. Landlord and property manager
+// share one admin capability; the label does not grant extra powers.
+export const account = pgTable("account", {
+  contact: text("contact").primaryKey(),
+  name: text("name").notNull(),
+  role: text("role").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
+// Address-only check-in. Filming a repair is separate and optional.
+export const propertyCheckin = pgTable(
+  "property_checkin",
+  {
+    addressKey: text("address_key").notNull(),
+    propertyAddress: text("property_address").notNull(),
+    contact: text("contact").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.addressKey, table.contact] }),
+  ],
+);
+
+export const propertyMember = pgTable(
+  "property_member",
+  {
+    addressKey: text("address_key").notNull(),
+    propertyAddress: text("property_address").notNull(),
+    contact: text("contact").notNull(),
+    role: text("role").notNull(),
+    name: text("name").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.addressKey, table.contact] }),
+  ],
+);
+
+export const propertyInvite = pgTable("property_invite", {
+  token: text("token").primaryKey(),
+  addressKey: text("address_key").notNull(),
+  propertyAddress: text("property_address").notNull(),
+  contact: text("contact").notNull(),
+  role: text("role").notNull(),
+  invitedBy: text("invited_by").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

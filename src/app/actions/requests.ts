@@ -20,6 +20,7 @@ import {
   beginPropertyBoard,
   getLandlordAccess,
 } from "@/server/board-access";
+import { currentAccount, recordPropertyCheckin } from "@/server/account";
 import { addressFromKey, safeAppPath, withSearchParam } from "@/lib/app-url";
 import { adjacentBoardStatus } from "@/lib/board-flow";
 import { parsePoundsToPence } from "@/lib/payments";
@@ -132,6 +133,8 @@ export async function createPublicRequestAction(
   if (files.some((file) => !file.type.startsWith("video/"))) {
     throw new Error("Only videos are allowed — attach short video clips.");
   }
+  const fromBoard = formText(formData, "from") === "board";
+  const account = await currentAccount();
   const priority: "low" | "medium" | "high" = "medium";
   const pickedTrade = formText(formData, "trade");
   const hintedTrade =
@@ -151,8 +154,8 @@ export async function createPublicRequestAction(
   );
   const groups = groupFilesBySession(files);
   const base = {
-    requesterName: null,
-    requesterContact: null,
+    requesterName: account?.name ?? null,
+    requesterContact: account?.contact ?? null,
     businessName: null,
     propertyAddress,
     priority,
@@ -171,7 +174,22 @@ export async function createPublicRequestAction(
     await generateReport(sibling.id, "VergeCare", { markSubmitted: false });
   }
   revalidatePath("/track");
-  redirect(`/request/${created.id}?new=1`);
+  revalidatePath("/home");
+  if (account) {
+    try {
+      await recordPropertyCheckin(account, propertyAddress);
+    } catch (error) {
+      console.error(
+        "[account] filmed repair was not attached to the board",
+        error instanceof Error ? error.name : "Error",
+      );
+    }
+  }
+  redirect(
+    fromBoard
+      ? `/request/${created.id}?new=1&from=board`
+      : `/request/${created.id}?new=1`,
+  );
 }
 
 export async function setJobStatusAction(
