@@ -20,9 +20,9 @@ describe("appUrl", () => {
   });
 
   it("prefers APP_URL, then NEXT_PUBLIC_APP_URL, then the public host", () => {
-    process.env.APP_URL = "https://demo-vergesnag.goverge.app/";
+    process.env.APP_URL = "https://demo-vergecare.goverge.app/";
     process.env.NEXT_PUBLIC_APP_URL = "http://localhost:3002";
-    expect(appUrl()).toBe("https://demo-vergesnag.goverge.app");
+    expect(appUrl()).toBe("https://demo-vergecare.goverge.app");
 
     delete process.env.APP_URL;
     process.env.NEXT_PUBLIC_APP_URL = "http://localhost:3002/";

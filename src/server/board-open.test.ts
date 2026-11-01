@@ -4,7 +4,7 @@ import { startBoardEmail } from "./board-open";
 describe("startBoardEmail", () => {
   const base = {
     email: "landlord@acme.co",
-    propertiesUrl: "https://vergesnag.goverge.app/b/tok",
+    propertiesUrl: "https://demo-vergecare.goverge.app/b/tok",
     recipientName: "Jordan",
   };
 

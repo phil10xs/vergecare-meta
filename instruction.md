@@ -6,7 +6,7 @@ Runs without any API key.
 ## 1. Prerequisites
 
 - Node.js 20+, pnpm 9+
-- PostgreSQL 16 with a `vergefield` database (`createdb vergefield`), or
+- PostgreSQL 16 with a `vergecare` database (`createdb vergecare`), or
   `docker compose up -d` from this folder (isolated Postgres on port 5433)
 
 ## 2. Install and configure

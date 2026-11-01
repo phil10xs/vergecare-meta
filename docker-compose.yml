@@ -5,16 +5,16 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: vergefield
+      POSTGRES_DB: vergecare
     ports:
       - "5433:5432"
     volumes:
-      - vergefield_pg:/var/lib/postgresql/data
+      - vergecare_pg:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d vergefield"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d vergecare"]
       interval: 5s
       timeout: 5s
       retries: 10
 
 volumes:
-  vergefield_pg:
+  vergecare_pg:

@@ -14,7 +14,7 @@ loadEnv({ path: resolve(__dirname, "../.env") });
 
 const connectionString =
   process.env.DATABASE_URL ??
-  "postgres://postgres:postgres@localhost:5433/vergefield";
+  "postgres://postgres:postgres@localhost:5433/vergecare";
 
 // 1px transparent PNG — keeps seeded photo rows renderable.
 const PIXEL = Buffer.from(

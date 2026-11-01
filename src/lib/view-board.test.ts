@@ -11,7 +11,7 @@ import type { BoardOpenResult } from "./view-board";
 
 const opened: BoardOpenResult = {
   boardPath: "/b/tok/p/key/board",
-  propertiesUrl: "https://vergesnag.goverge.app/b/tok",
+  propertiesUrl: "https://demo-vergecare.goverge.app/b/tok",
   email: "landlord@acme.co",
   emailStatus: "scheduled",
   message: "Sending your properties link.",

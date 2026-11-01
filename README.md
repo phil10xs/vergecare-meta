@@ -123,8 +123,8 @@ The Issues & Bills Tracker Board:
 
 ## Quickstart
 
-Prerequisites: Node.js 20+, pnpm 9+, PostgreSQL 16 with a `vergefield`
-database (`createdb vergefield`) — or `docker compose up -d` for the
+Prerequisites: Node.js 20+, pnpm 9+, PostgreSQL 16 with a `vergecare`
+database (`createdb vergecare`) — or `docker compose up -d` for the
 isolated container on port 5433.
 
 ```bash

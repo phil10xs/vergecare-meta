@@ -4,7 +4,7 @@ import * as schema from "./schema";
 
 const connectionString =
   process.env.DATABASE_URL ??
-  "postgres://postgres:postgres@localhost:5433/vergefield";
+  "postgres://postgres:postgres@localhost:5433/vergecare";
 
 const globalForDb = globalThis as unknown as {
   postgresClient?: ReturnType<typeof postgres>;

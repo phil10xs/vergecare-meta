@@ -53,7 +53,7 @@ export function withEmailStatus(
   boardPath: string,
   status: BoardEmailStatus,
 ): string {
-  const url = new URL(boardPath, "https://demo-vergesnag.goverge.app");
+  const url = new URL(boardPath, "https://demo-vergecare.goverge.app");
   url.searchParams.set("email", status);
   url.searchParams.set("celebrate", "1");
   return `${url.pathname}${url.search}`;
