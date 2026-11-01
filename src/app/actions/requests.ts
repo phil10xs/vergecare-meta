@@ -212,7 +212,7 @@ export async function moveBoardIssueAction(formData: FormData): Promise<void> {
   const address = addressFromKey(propertyKeyValue);
   if (!address) throw new Error("Property not found");
   const access = await getLandlordAccess(token);
-  if (!access) throw new Error("This link has expired");
+  if (!access) throw new Error("This link could not be opened");
   const owned = access.jobs.find(
     (row) => row.id === jobId && sessionAddress(row) === address,
   );
@@ -261,7 +261,7 @@ export async function saveBoardIssueAmountAction(
   const address = addressFromKey(propertyKeyValue);
   if (!address) throw new Error("Property not found");
   const access = await getLandlordAccess(token);
-  if (!access) throw new Error("This link has expired");
+  if (!access) throw new Error("This link could not be opened");
   const owned = access.jobs.find(
     (row) => row.id === jobId && sessionAddress(row) === address,
   );

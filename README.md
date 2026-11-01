@@ -74,7 +74,7 @@ this machine under `uploads/`.
 
 Requesters get their property's board without an account: from the visit
 report they request a magic link by email and open a read-only kanban at
-`/b/[token]`, expiring after 7 days.
+`/b/[token]`. The link does not expire.
 
 Every screen is mobile-first and adaptive across phone, tablet, and laptop:
 single-column forms, 44px touch targets, camera capture on phones degrading

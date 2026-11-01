@@ -6,7 +6,6 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { config as loadEnv } from "dotenv";
 import { boardToken, job, siteMedia, siteReport } from "../src/db/schema";
-import { BOARD_TOKEN_TTL_MS } from "../src/lib/board-token";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -224,7 +223,6 @@ async function main() {
       token,
       jobId: leakingTap.id,
       email: "landlord@example.com",
-      expiresAt: new Date(Date.now() + BOARD_TOKEN_TTL_MS),
     });
     boardUrl = `http://localhost:3002/b/${token}`;
   }

@@ -9,9 +9,7 @@ import {
   propertyBoardPath,
 } from "@/lib/app-url";
 import {
-  BOARD_TOKEN_TTL_MS,
   classifyLandlordContact,
-  isBoardTokenLive,
   isBoardTokenShape,
   jobsForLandlord,
   normalizeContact,
@@ -60,23 +58,17 @@ export async function ensureLandlordLink(
     .orderBy(desc(boardToken.createdAt))
     .limit(1);
 
-  const expiresAt = new Date(Date.now() + BOARD_TOKEN_TTL_MS);
   let token: string;
   let emailedAt: Date | null = null;
-  if (existing && isBoardTokenLive(existing.expiresAt)) {
+  if (existing) {
     token = existing.token;
     emailedAt = existing.emailedAt;
-    await db
-      .update(boardToken)
-      .set({ expiresAt })
-      .where(eq(boardToken.token, token));
   } else {
     token = randomBytes(24).toString("base64url");
     await db.insert(boardToken).values({
       token,
       jobId,
       email: clean,
-      expiresAt,
     });
   }
 
@@ -90,7 +82,7 @@ export async function ensureLandlordLink(
   };
 }
 
-/** Latest live token for each email that already has a queued magic link. */
+/** Latest token for each email that already has a queued magic link. */
 export async function landlordLinksEmailed(
   emails: string[],
 ): Promise<Set<string>> {
@@ -106,7 +98,6 @@ export async function landlordLinksEmailed(
     .select({
       email: boardToken.email,
       emailedAt: boardToken.emailedAt,
-      expiresAt: boardToken.expiresAt,
     })
     .from(boardToken)
     .where(inArray(boardToken.email, clean))
@@ -116,7 +107,7 @@ export async function landlordLinksEmailed(
   for (const row of rows) {
     if (seen.has(row.email)) continue;
     seen.add(row.email);
-    if (row.emailedAt && isBoardTokenLive(row.expiresAt)) sent.add(row.email);
+    if (row.emailedAt) sent.add(row.email);
   }
   return sent;
 }
@@ -151,7 +142,7 @@ async function sendQueuedBoardLink(
 }
 
 /**
- * Queue the magic link the first time this live token has no send on record.
+ * Queue the magic link the first time this token has no send on record.
  * A failed queue releases the claim so a later View Board can send once.
  * An email failure here must not throw — the board still opens.
  */
@@ -178,7 +169,7 @@ async function deliverLandlordLink(link: {
     }
   }
   if (alreadySent) {
-    console.info("[board-link] live link already emailed — skip");
+    console.info("[board-link] link already emailed — skip");
   }
   const delivery = startBoardEmail({
     email: link.email,
@@ -315,7 +306,7 @@ export async function getLandlordAccess(token: string): Promise<
     .select()
     .from(boardToken)
     .where(eq(boardToken.token, token));
-  if (!link || !isBoardTokenLive(link.expiresAt)) return undefined;
+  if (!link) return undefined;
 
   const [anchor] = await db.select().from(job).where(eq(job.id, link.jobId));
   const jobs = await db.select().from(job).orderBy(asc(job.createdAt));
@@ -333,7 +324,7 @@ export async function loadPropertyForToken(
   token: string,
   key: string,
 ): Promise<
-  | { kind: "expired" }
+  | { kind: "invalid" }
   | { kind: "missing"; token: string }
   | {
       kind: "ok";
@@ -344,7 +335,7 @@ export async function loadPropertyForToken(
     }
 > {
   const access = await getLandlordAccess(token);
-  if (!access) return { kind: "expired" };
+  if (!access) return { kind: "invalid" };
   const address = addressFromKey(key);
   if (!address) return { kind: "missing", token: access.token };
   const jobs = access.jobs.filter((row) => sessionAddress(row) === address);

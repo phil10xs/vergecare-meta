@@ -1,7 +1,5 @@
 import type { Job } from "@/db/schema";
 
-export const BOARD_TOKEN_TTL_MS = 7 * 24 * 3600 * 1000;
-
 /** Opaque token. Hex links already sent and new base64url tokens both match. */
 export function isBoardTokenShape(token: string): boolean {
   return /^[A-Za-z0-9_-]{16,128}$/.test(token);
@@ -60,11 +58,4 @@ export function classifyLandlordContact(value: string): LandlordContact | null {
   }
   if (!isValidPhone(trimmed)) return null;
   return { kind: "phone", value: normalizeContact(trimmed) };
-}
-
-export function isBoardTokenLive(
-  expiresAt: Date,
-  now: Date = new Date(),
-): boolean {
-  return expiresAt.getTime() > now.getTime();
 }

@@ -23,7 +23,7 @@ export default async function PropertyBoardPage({
   const { token, key } = await params;
   const { celebrate, email } = await searchParams;
   const loaded = await loadPropertyForToken(token, key);
-  if (loaded.kind === "expired") return <ExpiredBoardLink />;
+  if (loaded.kind === "invalid") return <ExpiredBoardLink />;
   if (loaded.kind === "missing") {
     return (
       <AppShell>

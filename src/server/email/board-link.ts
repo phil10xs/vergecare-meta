@@ -21,7 +21,7 @@ export function boardLinkEmailContent(input: {
     `Open my properties: ${input.propertiesUrl}`,
     "",
     "No password needed. This link is your access.",
-    "It expires in 7 days. Do not forward it to anyone who should not see your properties, issues, or bills.",
+    "Do not forward it to anyone who should not see your properties, issues, or bills.",
     "",
     emailBrandFooter(),
   ].join("\n");
@@ -40,7 +40,7 @@ export function boardLinkEmailContent(input: {
         ${escapeHtml(input.propertiesUrl)}
       </p>
       <p style="margin:0;font-size:13px;color:#555;">
-        No password needed. This link is your access. It expires in 7 days.
+        No password needed. This link is your access.
         Do not forward it to anyone who should not see your properties, issues,
         or bills.
       </p>

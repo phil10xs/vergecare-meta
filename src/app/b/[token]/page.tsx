@@ -103,8 +103,7 @@ export default async function MyPropertiesPage({
         </ul>
       )}
       <p className="mt-6 text-sm text-muted-foreground">
-        This link is for {access.email}. It expires 7 days after it was last
-        refreshed.
+        This link is for {access.email}. It does not expire.
       </p>
     </AppShell>
   );

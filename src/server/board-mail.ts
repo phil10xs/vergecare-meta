@@ -35,7 +35,7 @@ export async function sendBoardLinkEmail(
     });
     return {
       status: "sent",
-      message: `Link emailed to ${email}. It expires in 7 days.`,
+      message: `Link emailed to ${email}.`,
     };
   } catch (error) {
     console.error(

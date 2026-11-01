@@ -12,11 +12,11 @@ export function ExpiredBoardLink() {
           aria-hidden
         />
         <h1 className="mt-4 font-display text-2xl font-bold tracking-tight sm:text-3xl">
-          This link has expired
+          This link could not be opened
         </h1>
         <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base">
-          Property links last 7 days and do not use a password. Ask for a fresh
-          one from your visit report.
+          This address does not match a property link. Ask for a new one from
+          your visit report.
         </p>
         <div className="mt-6">
           <Link href="/request" className="inline-flex w-full justify-center sm:w-auto">

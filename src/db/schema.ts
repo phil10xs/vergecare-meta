@@ -98,10 +98,11 @@ export const boardToken = pgTable("board_token", {
     .references(() => job.id, { onDelete: "cascade" })
     .notNull(),
   email: text("email").notNull(),
-  // Set when a magic-link email has been queued for this live token.
+  // Set when a magic-link email has been queued for this token.
   // Later properties reuse the token and do not send again.
   emailedAt: timestamp("emailed_at", { withTimezone: true }),
-  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  // Older rows stored a 7-day cutoff. Access does not read it, and new links leave it empty.
+  expiresAt: timestamp("expires_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

@@ -22,7 +22,7 @@ export default async function PropertySnagPage({
 }) {
   const { token, key } = await params;
   const loaded = await loadPropertyForToken(token, key);
-  if (loaded.kind === "expired") return <ExpiredBoardLink />;
+  if (loaded.kind === "invalid") return <ExpiredBoardLink />;
   if (loaded.kind === "missing") {
     return (
       <AppShell>

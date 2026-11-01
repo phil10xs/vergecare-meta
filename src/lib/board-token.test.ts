@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
   classifyLandlordContact,
-  isBoardTokenLive,
   isValidEmail,
   isValidPhone,
   jobsForLandlord,
@@ -31,21 +30,6 @@ describe("classifyLandlordContact", () => {
     expect(isValidPhone("07123 888888")).toBe(true);
     expect(classifyLandlordContact("not-a-contact")).toBeNull();
     expect(classifyLandlordContact("jordan@com")).toBeNull();
-  });
-});
-
-describe("isBoardTokenLive", () => {
-  it("compares expiry against now", () => {
-    const now = new Date("2026-10-29T12:00:00Z");
-    expect(
-      isBoardTokenLive(new Date("2026-10-30T12:00:00Z"), now),
-    ).toBe(true);
-    expect(
-      isBoardTokenLive(new Date("2026-10-29T12:00:00Z"), now),
-    ).toBe(false);
-    expect(
-      isBoardTokenLive(new Date("2026-10-28T12:00:00Z"), now),
-    ).toBe(false);
   });
 });
 
