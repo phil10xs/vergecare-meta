@@ -9,9 +9,9 @@ Built for the **Meta AI Global Hackathon 2026** — **Indie track**.
 
 **Live product demo:** https://demo-vergecare.goverge.app/request
 (hosted VergeCare Beta — this repo is the source-available build of the same app) ·
-**Demo video:** https://youtu.be/aHLs56BK9LY
+**VergeCare Demo (Beta)- Meta Global AI Hackathon 2026:** https://youtu.be/aHLs56BK9LY
 
-[![Watch the VergeCare demo](https://i.ytimg.com/vi/aHLs56BK9LY/maxresdefault.jpg)](https://youtu.be/aHLs56BK9LY)
+[![Watch the VergeCare demo](public/images/vergecare-demo-thumbnail.jpg)](https://youtu.be/aHLs56BK9LY)
 
 ## At a glance for judges
 
@@ -201,7 +201,8 @@ private full build:
 
 - Deploy stack lives in the private repo only: production Dockerfile,
   Caddy, `deploy/` configs and scripts, AWS runbooks, Vercel project.
-- Demo media (cinematic cut, thumbnail) is not in git.
+- Demo video masters (cinematic cut) are not in git; the README
+  thumbnail lives in `public/images/`.
 
 Everything user-facing — check-in, visit reports, Issues snag list,
 magic-link Issues & Bills Tracker Board through Paid, payments, SAM
