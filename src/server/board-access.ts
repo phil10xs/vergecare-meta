@@ -1,6 +1,6 @@
 import { randomBytes } from "crypto";
 import { revalidatePath } from "next/cache";
-import { and, asc, desc, eq, inArray, isNull } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNull, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { boardToken, job, type Job } from "@/db/schema";
 import {
@@ -23,6 +23,28 @@ import {
   emailConfigured,
   isBlockedEmailRecipient,
 } from "@/server/email/ses";
+
+let boardTokenExpiryRelaxed = false;
+
+/** Older databases require expires_at. New links leave it empty, so drop that rule once. */
+async function relaxBoardTokenExpiry(): Promise<void> {
+  if (boardTokenExpiryRelaxed) return;
+  const result = await db.execute(sql`
+    select is_nullable::text as is_nullable
+    from information_schema.columns
+    where table_schema = 'public'
+      and table_name = 'board_token'
+      and column_name = 'expires_at'
+  `);
+  const rows = Array.isArray(result) ? result : [];
+  const nullable = (rows[0] as { is_nullable?: string } | undefined)?.is_nullable;
+  if (nullable === "NO") {
+    await db.execute(
+      sql`alter table board_token alter column expires_at drop not null`,
+    );
+  }
+  boardTokenExpiryRelaxed = true;
+}
 
 /**
  * Landlord magic link. The token is the credential. A password added later
@@ -50,6 +72,14 @@ export async function ensureLandlordLink(
   }
   const [anchor] = await db.select().from(job).where(eq(job.id, jobId));
   if (!anchor) throw new Error("Job not found");
+  try {
+    await relaxBoardTokenExpiry();
+  } catch (error) {
+    console.error(
+      "[board-link] could not relax link expiry",
+      error instanceof Error ? error.name : "Error",
+    );
+  }
 
   const [existing] = await db
     .select()
