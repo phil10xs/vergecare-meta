@@ -1,6 +1,6 @@
 # VergeCare(Beta) — Your AI Property Caretaker
 
-> Film a repair issue, narrate what you see, and get a costed snag list plus an Issues & Bills Tracker Board in under a minute — every visit remembered.
+> Film a repair issue, narrate what you see, and get a costed snag list, a matched handyman, and an Issues & Bills Tracker Board in under a minute — every visit remembered.
 
 [![License: BSL 1.1](https://img.shields.io/badge/license-BSL_1.1-blue)](LICENSE)
 
@@ -18,7 +18,7 @@ Built for the **Meta AI Global Hackathon 2026** — **Indie track**.
 
 | Criterion | Where the evidence is |
 |---|---|
-| **Impact** — real-world potential, who benefits, problem fit | Property repairs die in chat threads while damp and disrepair compound. VergeCare turns one filmed check-in into a costed snag list and a bills-to-paid board for landlords, homeowners, managers and tenants, with a property manager on the waiting list and 2 homes onboarded. See [The problem](#the-problem) and [What it does](#what-it-does). |
+| **Impact** — real-world potential, who benefits, problem fit | Property repairs die in chat threads while damp and disrepair compound. VergeCare turns one filmed check-in into a costed snag list, a matched handyman, and a bills-to-paid board for landlords, homeowners, managers and tenants, with a property manager on the waiting list and 2 homes onboarded. See [The problem](#the-problem) and [What it does](#what-it-does). |
 | **Meta AI tooling** — creative use beyond a basic integration | Two Muse Spark passes per clip (video understanding, then text-only triage reasoning) plus SAM 3.1 damage grounding, all through the Meta Model API — with a deterministic engine underneath so every session is filed even when AI is unavailable. See [Meta AI tooling](#meta-ai-tooling). |
 | **Technical depth** — sound, refined engineering | Next.js 15 + TypeScript, 120 unit tests (19 files, vitest, all passing) plus an automated end-to-end script, typecheck + lint + secrets gates, mobile-first adaptive UI. See [Engineering depth](#engineering-depth) and [Architecture](#architecture). |
 | **Demo** — working product, live, video | Live deployment, demo video above, one-command local quickstart that runs with no API keys, and a 5-minute seeded demo path. See [Quickstart](#quickstart) and [Demo in 5 minutes](#demo-in-5-minutes). |
@@ -32,10 +32,10 @@ lost threads. Across one home or a whole portfolio, the property itself keeps
 no memory — every visit starts from zero.
 
 VergeCare gives the property a memory. One filmed check-in becomes an
-organized Issues snag list (trade, severity, likely cost on every issue) and
-an Issues & Bills Tracker Board that follows each fix from Requested to Paid.
-No accounts, no passwords for the people watching a repair move: the board
-travels on a magic link.
+organized Issues snag list (trade, severity, likely cost on every issue), a
+matched handyman, and an Issues & Bills Tracker Board that follows each fix
+from Requested to Paid. No accounts, no passwords for the people watching a
+repair move: the board travels on a magic link.
 
 ## Traction (Nov 2026)
 
@@ -49,10 +49,13 @@ travels on a magic link.
    issue (≤20 s each) and narrate what you see as you film.
 2. **Get your snag list** — seconds later, every issue is listed with its
    trade, severity grade and likely UK cost band.
-3. **Track it to Paid** — the property's board moves each card Requested → In
-   progress → Completed → Paid; recording an amount marks the bill.
-4. **Remember everything** — every clip, report and bill stays with the
-   property, visit after visit.
+3. **Get a matched handyman** — matched by skill, location and price for each
+   issue.
+4. **Track it to Paid** — the property's board moves each card Requested → In
+   progress → Completed → Paid; bills are marked Due/Sent and confirmed Paid
+   with Pay now, so automated payments close the loop.
+5. **Remember everything** — every clip, report, handyman and bill stays with
+   the property, visit after visit.
 
 ## Meta AI tooling
 
