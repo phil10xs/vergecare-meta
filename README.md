@@ -169,6 +169,21 @@ pnpm dev       # http://localhost:3002
 Prefer watching? The [demo video](https://youtu.be/aHLs56BK9LY) walks the
 same path end to end.
 
+On desktop with no clips handy, download the base e2e test clip
+([Google Drive](https://drive.google.com/file/d/1p7-j7FmEnigX8hcyw3_3Y5EYsvBroqC2/view?usp=sharing),
+2MB, ~10s), then run the same journey headlessly against your running server:
+
+```bash
+VIDEO_PATH=~/Downloads/vergecare-e2e-test-clip.mp4 pnpm test:e2e
+```
+
+This submits one real check-in, asserts the Meta transcript, severity and
+trade, walks the board to Paid, and cleans up afterwards. Add
+`FRAME_PATH=~/still.jpg` (≤2MB) to also exercise SAM grounding; without it
+SAM is skipped (the browser flow captures stills automatically). More
+test clips live in the demo footage zip
+([Google Drive](https://drive.google.com/file/d/1Zm9FlpDPe27eUYOts5ier8eIkeoWOJz1/view?usp=sharing)).
+
 ## Check-in flow
 
 Check in → Visit report → Track → Board. A video is enough to submit: each
