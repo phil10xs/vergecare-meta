@@ -58,6 +58,31 @@ describe("analyzeVideo", () => {
     });
   });
 
+  it("accepts window fitter and ranks it after joiner in the prompt", async () => {
+    const spy = mockAnalysis(
+      JSON.stringify({
+        transcript: "fit the sash",
+        description: "uPVC window",
+        trade: "window fitter",
+        object: "window",
+      }),
+    );
+    await expect(
+      analyzeVideo(Buffer.from("clip"), "video/mp4"),
+    ).resolves.toMatchObject({ trade: "Window fitter" });
+    const init = spy.mock.calls[1]?.[1] as { body?: string };
+    const body = JSON.parse(init.body ?? "{}") as {
+      input: { content: { type?: string; text?: string }[] }[];
+    };
+    const text = body.input[0]?.content.find(
+      (part) => part.type === "input_text",
+    )?.text;
+    expect(text).toContain("Window fitter");
+    expect(text).toContain(
+      "Window fitter is the next trade after Joiner, not Carpenter.",
+    );
+  });
+
   it("nulls an unknown trade but keeps transcript and description", async () => {
     mockAnalysis(
       JSON.stringify({

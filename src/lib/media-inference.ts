@@ -1,4 +1,4 @@
-import { TRADES } from "./chat-parse";
+import { labelTrade, TRADES } from "./chat-parse";
 
 const TRADE_KEYWORDS: { trade: string; words: string[] }[] = [
   {
@@ -153,12 +153,25 @@ const TRADE_KEYWORDS: { trade: string; words: string[] }[] = [
     trade: "Joiner",
     words: [
       "window",
+      "glazing",
       "double glazing",
       "upvc",
       "sash",
+      "window frame",
       "patio door",
       "lock",
       "frame",
+    ],
+  },
+  {
+    trade: "Window fitter",
+    words: [
+      "window",
+      "glazing",
+      "double glazing",
+      "upvc",
+      "sash",
+      "window frame",
     ],
   },
   {
@@ -204,36 +217,87 @@ const TRADE_KEYWORDS: { trade: string; words: string[] }[] = [
   },
 ];
 
-function titleCase(trade: string): string {
-  return trade
-    .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-}
+const WINDOW_WORDS = [
+  "window frame",
+  "double glazing",
+  "glazing",
+  "window",
+  "upvc",
+  "sash",
+];
+
+/** Related trade when the primary is already chosen. Joiner falls through to Window fitter, not Carpenter. */
+const NEXT_TRADE: Record<string, string> = {
+  Joiner: "Window fitter",
+};
 
 function wordPattern(word: string): RegExp {
   return new RegExp(`\\b${word}s?\\b`);
 }
 
-export function inferTrade(text: string): string | null {
+function hasWindowLanguage(lower: string): boolean {
+  return WINDOW_WORDS.some((word) => wordPattern(word).test(lower));
+}
+
+/**
+ * On a hit-count tie, window and glazing language keeps Joiner first and
+ * Window fitter next. Carpenter only wins that tie when the text has no
+ * window language, which is the previous list order.
+ */
+function tiePreference(trade: string, windowJob: boolean): number {
+  if (!windowJob) return 0;
+  if (trade === "Joiner") return 0;
+  if (trade === "Window fitter") return 1;
+  if (trade === "Carpenter") return 3;
+  return 2;
+}
+
+export function nextTrade(trade: string | null): string | null {
+  if (!trade) return null;
+  return NEXT_TRADE[trade] ?? null;
+}
+
+function withNext(primary: string, ranked: string[]): string[] {
+  const next = nextTrade(primary);
+  const rest = ranked.filter((trade) => trade !== primary && trade !== next);
+  return next ? [primary, next, ...rest] : [primary, ...rest];
+}
+
+export function rankTrades(text: string): string[] {
   const lower = text.toLowerCase();
-  if (!lower.trim()) return null;
+  if (!lower.trim()) return [];
   const named = [...TRADES].sort((a, b) => b.length - a.length);
   for (const trade of named) {
     if (wordPattern(trade).test(lower)) {
-      return titleCase(trade);
+      return withNext(labelTrade(trade), []);
     }
   }
-  let best: { trade: string; hits: number } | null = null;
-  for (const { trade, words } of TRADE_KEYWORDS) {
-    const hits = words.filter((word) =>
+  const windowJob = hasWindowLanguage(lower);
+  const scored = TRADE_KEYWORDS.map((entry, index) => ({
+    trade: entry.trade,
+    index,
+    hits: entry.words.filter((word) =>
       wordPattern(word.toLowerCase()).test(lower),
-    ).length;
-    if (hits > 0 && (!best || hits > best.hits)) {
-      best = { trade, hits };
-    }
-  }
-  return best?.trade ?? null;
+    ).length,
+  }))
+    .filter((entry) => entry.hits > 0)
+    .sort((a, b) => {
+      if (b.hits !== a.hits) return b.hits - a.hits;
+      const preference =
+        tiePreference(a.trade, windowJob) - tiePreference(b.trade, windowJob);
+      if (preference !== 0) return preference;
+      return a.index - b.index;
+    });
+  const primary = scored[0]?.trade;
+  if (!primary) return [];
+  return withNext(
+    primary,
+    scored.map((entry) => entry.trade),
+  );
+}
+
+export function inferTrade(text: string): string | null {
+  return rankTrades(text)[0] ?? null;
 }
 
 export function buildTitle(

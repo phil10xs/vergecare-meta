@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildTitle, inferTrade } from "./media-inference";
+import { buildTitle, inferTrade, nextTrade, rankTrades } from "./media-inference";
 
 describe("inferTrade", () => {
   it.each([
@@ -34,6 +34,35 @@ describe("inferTrade", () => {
   it("returns null when nothing matches", () => {
     expect(inferTrade("hello there")).toBeNull();
     expect(inferTrade("   ")).toBeNull();
+  });
+
+  it.each([
+    "the sash window will not close",
+    "double glazing has failed",
+    "uPVC window frame is cracked",
+    "glazing cracked in the bedroom",
+  ])("keeps window language as Joiner: %s", (text) => {
+    expect(inferTrade(text)).toBe("Joiner");
+    expect(rankTrades(text).slice(0, 2)).toEqual(["Joiner", "Window fitter"]);
+  });
+
+  it("uses Window fitter as the next trade when a window job also matches carpentry", () => {
+    expect(rankTrades("timber sash window")).toEqual([
+      "Joiner",
+      "Window fitter",
+      "Carpenter",
+    ]);
+    expect(nextTrade("Joiner")).toBe("Window fitter");
+    expect(nextTrade("Carpenter")).toBeNull();
+  });
+
+  it("does not turn ordinary carpentry into window fitting", () => {
+    expect(inferTrade("broken wardrobe door hinge")).toBe("Carpenter");
+    expect(rankTrades("wooden cupboard drawer")).toEqual(["Carpenter"]);
+  });
+
+  it("keeps an explicitly named window fitter", () => {
+    expect(inferTrade("book a window fitter for Tuesday")).toBe("Window fitter");
   });
 });
 

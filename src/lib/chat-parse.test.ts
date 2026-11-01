@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseJobMessage } from "./chat-parse";
+import { parseJobMessage, TRADE_OPTIONS } from "./chat-parse";
 
 describe("parseJobMessage", () => {
   it("extracts site, assignee, priority, and trade", () => {
@@ -34,6 +34,15 @@ describe("parseJobMessage", () => {
     expect(draft.siteName).toBeNull();
     expect(draft.notes).toBe("client attending");
     expect(draft.title).toContain("Friday");
+  });
+
+  it("labels window fitter like the other multi-word trades", () => {
+    expect(TRADE_OPTIONS).toContain("Window fitter");
+    expect(TRADE_OPTIONS).toContain("Heating engineer");
+    expect(parseJobMessage("Need a window fitter for the sash").trade).toBe(
+      "Window fitter",
+    );
+    expect(parseJobMessage("Need a joiner for the stairs").trade).toBe("Joiner");
   });
 
   it("falls back to the raw message when nothing parses", () => {

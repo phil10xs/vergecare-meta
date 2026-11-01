@@ -18,6 +18,7 @@ export const TRADES = [
   "tiler",
   "welder",
   "joiner",
+  "window fitter",
   "scaffolder",
   "labourer",
   "heating engineer",
@@ -26,13 +27,13 @@ export const TRADES = [
   "cleaner",
 ] as const;
 
+/** Display label. Multi-word trades keep the later words lowercase ("Heating engineer"). */
+export function labelTrade(trade: string): string {
+  return trade.charAt(0).toUpperCase() + trade.slice(1);
+}
+
 export const TRADE_OPTIONS = [
-  ...TRADES.map((trade) =>
-    trade
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" "),
-  ),
+  ...TRADES.map((trade) => labelTrade(trade)),
   "Other",
 ] as const;
 
@@ -116,10 +117,7 @@ export function parseJobMessage(message: string): JobDraft {
   const sortedTrades = [...TRADES].sort((a, b) => b.length - a.length);
   for (const option of sortedTrades) {
     if (new RegExp(`\\b${option}s?\\b`).test(rest.toLowerCase())) {
-      trade = option
-        .split(" ")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ");
+      trade = labelTrade(option);
       break;
     }
   }
