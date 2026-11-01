@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 const AUDIENCE = [
   "Landlords",
   "Homeowners",
-  "Property/Facility Managers",
+  "Property managers",
 ] as const;
 
 function MetaMark() {
@@ -23,7 +23,7 @@ function MetaMark() {
   );
 }
 
-function CheckInLink({ href }: { href: string }) {
+function CheckInLink({ href, label }: { href: string; label: string }) {
   const className = cn(
     buttonVariants({ variant: "accent", size: "lg" }),
     "mt-6 flex h-14 w-full px-8 text-lg sm:inline-flex sm:w-auto",
@@ -31,18 +31,24 @@ function CheckInLink({ href }: { href: string }) {
   if (href.startsWith("#")) {
     return (
       <a href={href} className={className}>
-        Check in for free
+        {label}
       </a>
     );
   }
   return (
     <Link href={href} className={className}>
-      Check in for free
+      {label}
     </Link>
   );
 }
 
-export function CaretakerHero({ checkInHref }: { checkInHref?: string }) {
+export function CaretakerHero({
+  checkInHref,
+  ctaLabel = "Get early access",
+}: {
+  checkInHref?: string;
+  ctaLabel?: string;
+}) {
   return (
     <section className="px-3 pt-3 sm:px-5 sm:pt-5 lg:px-6 lg:pt-6">
       <div className="relative isolate mx-auto grid w-full max-w-7xl overflow-hidden rounded-[1.75rem] bg-[#071617] text-[#f7faf9] shadow-[0_24px_80px_rgba(0,0,0,0.28)]">
@@ -70,17 +76,18 @@ export function CaretakerHero({ checkInHref }: { checkInHref?: string }) {
         <div className="relative z-10 col-start-1 row-start-1 w-full min-w-0 self-center px-5 py-8 sm:w-[64%] sm:px-10 sm:py-10 md:w-[56%] lg:w-[50%] lg:px-14">
           <div className="min-w-0">
             <h1 className="max-w-3xl text-balance font-display text-[1.85rem] font-semibold leading-[1.08] tracking-[-0.045em] text-white md:text-[2.35rem] lg:text-[3rem] lg:leading-[1.06] xl:text-[3.4rem]">
-              The AI Caretaker for your property.
+              Your AI Property Caretaker.
             </h1>
             <p className="mt-4 max-w-2xl font-display text-lg font-bold leading-snug tracking-[-0.03em] text-white sm:text-xl lg:text-[1.65rem]">
-              Film &amp; narrate the issue. Track the bill. All from one
-              check-in.
+              Spots issues. Creates snag lists. Finds handymen. Keeps costs
+              under control.
             </p>
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/85 sm:text-base">
-              Damp walls, leaky pipes, weedy gardens — across one home or a
-              whole portfolio.
+            <p className="mt-3 max-w-2xl text-sm font-semibold leading-relaxed text-[var(--gv-signal)] sm:text-base">
+              VergeCare gets things sorted.
             </p>
-            {checkInHref ? <CheckInLink href={checkInHref} /> : null}
+            {checkInHref ? (
+              <CheckInLink href={checkInHref} label={ctaLabel} />
+            ) : null}
             <ul
               className="mt-8 flex flex-wrap gap-2"
               aria-label="Who VergeCare is for"

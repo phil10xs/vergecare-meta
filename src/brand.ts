@@ -4,7 +4,7 @@ export const brand = {
   engine: "your caretaker",
   tagline: "Property care, remembered.",
   description:
-    "VergeCare is an AI caretaker for your property: film issues, track bills, every visit remembered.",
+    "Your AI Property Caretaker. Spots issues, creates snag lists, finds handymen and keeps costs under control.",
 } as const;
 
 export const howItWorks = [
