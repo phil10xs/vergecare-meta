@@ -50,8 +50,7 @@ const STEPS = [
   {
     number: "03",
     title: "Find the right handyman",
-    body: "VergeCare finds suitable local handymen, checks availability and compares prices.",
-    note: "It looks at skills and location too. You approve the handyman and the final price before work begins.",
+    body: "VergeCare finds local handymen by skill, location and price. You approve the handyman and price before work starts.",
   },
   {
     number: "04",
@@ -220,11 +219,6 @@ export default function PublicRequestPage() {
                   <p className="mt-2 text-base leading-relaxed text-muted-foreground">
                     {step.body}
                   </p>
-                  {"note" in step ? (
-                    <p className="mt-2 text-base leading-relaxed text-muted-foreground">
-                      {step.note}
-                    </p>
-                  ) : null}
                 </div>
               </li>
             ))}
