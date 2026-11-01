@@ -4,11 +4,12 @@ const emailSchema = z.email();
 
 const waitlistFields = z.object({
   name: z.string().trim().min(1, "Enter your name").max(120),
-  businessName: z
-    .string()
-    .trim()
-    .min(1, "Enter your business name")
-    .max(160),
+  // Optional for every role. Missing, null, and blank become an empty string
+  // so the NOT NULL waitlist column can store residents and blank signups.
+  businessName: z.preprocess(
+    (value) => (typeof value === "string" ? value : ""),
+    z.string().trim().max(160),
+  ),
   address: z.string().trim().min(1, "Enter your address").max(400),
   contact: z
     .string()

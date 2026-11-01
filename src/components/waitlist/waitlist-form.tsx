@@ -25,13 +25,18 @@ export function WaitlistForm({
   defaultContact?: string;
 }) {
   const router = useRouter();
+  const [role, setRole] = useState<AccountRole>(lockedRole ?? defaultRole);
   const [pending, setPending] = useState(false);
   const [confirmation, setConfirmation] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const activeRole = lockedRole ?? role;
+  const showBusinessName = activeRole !== "resident";
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
+    const submittedRole = form.get("role");
+    const businessName = form.get("businessName");
     setPending(true);
     setError(null);
     setConfirmation(null);
@@ -41,10 +46,13 @@ export function WaitlistForm({
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           name: form.get("name"),
-          businessName: form.get("businessName"),
+          businessName:
+            submittedRole === "resident" || typeof businessName !== "string"
+              ? ""
+              : businessName,
           address: form.get("address"),
           contact: form.get("contact"),
-          role: form.get("role"),
+          role: submittedRole,
           invite,
         }),
       });
@@ -86,22 +94,25 @@ export function WaitlistForm({
           Are you a resident, landlord or property manager?
         </legend>
         <div className="grid gap-2">
-          {ROLES.map((role) => {
-            const selected = (lockedRole ?? defaultRole) === role;
+          {ROLES.map((option) => {
+            const selected = activeRole === option;
             return (
               <label
-                key={role}
+                key={option}
                 className="flex min-h-11 items-center gap-2 text-sm font-semibold"
               >
                 <input
                   type="radio"
                   name={lockedRole ? undefined : "role"}
-                  value={role}
-                  defaultChecked={selected}
+                  value={option}
+                  checked={selected}
+                  onChange={() => {
+                    if (!lockedRole) setRole(option);
+                  }}
                   disabled={Boolean(lockedRole)}
                   className="h-4 w-4"
                 />
-                {roleLabel(role)}
+                {roleLabel(option)}
               </label>
             );
           })}
@@ -120,18 +131,19 @@ export function WaitlistForm({
           className="text-field"
         />
       </label>
-      <label className="block" htmlFor="waitlist-business">
-        <span className="mb-1.5 block text-sm font-semibold">
-          Business name
-        </span>
-        <input
-          id="waitlist-business"
-          name="businessName"
-          required
-          autoComplete="organization"
-          className="text-field"
-        />
-      </label>
+      {showBusinessName ? (
+        <label className="block" htmlFor="waitlist-business">
+          <span className="mb-1.5 block text-sm font-semibold">
+            Business name (optional)
+          </span>
+          <input
+            id="waitlist-business"
+            name="businessName"
+            autoComplete="organization"
+            className="text-field"
+          />
+        </label>
+      ) : null}
       <label className="block" htmlFor="waitlist-address">
         <span className="mb-1.5 block text-sm font-semibold">Address</span>
         <input

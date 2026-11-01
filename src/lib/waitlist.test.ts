@@ -47,4 +47,22 @@ describe("parseWaitlist", () => {
     });
     expect(parsed.ok).toBe(false);
   });
+
+  it("accepts a missing or blank business name", () => {
+    const base = {
+      name: "Ada",
+      address: "12 Rosebank Road, Manchester",
+      contact: "ada@example.com",
+    };
+    for (const input of [
+      base,
+      { ...base, businessName: "" },
+      { ...base, businessName: "   " },
+      { ...base, businessName: null },
+    ]) {
+      const parsed = parseWaitlist(input);
+      expect(parsed.ok).toBe(true);
+      if (parsed.ok) expect(parsed.data.businessName).toBe("");
+    }
+  });
 });

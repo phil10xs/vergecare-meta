@@ -59,13 +59,13 @@ export function CaretakerHero({
 }) {
   return (
     <section className="px-3 pt-3 sm:px-5 sm:pt-5 lg:px-6 lg:pt-6">
-      <div className="relative isolate mx-auto flex h-[50dvh] min-h-[17.5rem] w-full max-w-7xl items-center overflow-hidden rounded-[1.75rem] bg-[#071617] text-[#f7faf9] shadow-[0_24px_80px_rgba(0,0,0,0.28)]">
+      <div className="relative isolate mx-auto flex h-[75dvh] min-h-[32rem] w-full max-w-7xl items-center overflow-hidden rounded-[1.75rem] bg-[#071617] text-[#f7faf9] shadow-[0_24px_80px_rgba(0,0,0,0.28)]">
         <figure className="absolute inset-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/images/checkin-after.jpg"
             alt="Cared-for house with fixed wall, tap and window"
-            className="h-full w-full object-cover object-[center_42%] brightness-[0.72] sm:object-[right_center]"
+            className="h-full w-full object-cover object-[center_42%] brightness-[0.88] sm:object-[right_center]"
           />
           <figcaption className="sr-only">
             The cared-for house, with the fixed wall, tap and window shown beside it
@@ -73,34 +73,33 @@ export function CaretakerHero({
         </figure>
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[linear-gradient(100deg,rgba(7,22,23,0.88)_0%,rgba(7,22,23,0.78)_34%,rgba(7,22,23,0.66)_62%,rgba(7,22,23,0.55)_100%)]"
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(100deg,rgba(7,22,23,0.72)_0%,rgba(7,22,23,0.58)_36%,rgba(7,22,23,0.46)_64%,rgba(7,22,23,0.36)_100%)]"
         />
 
-        <div className="relative z-10 w-full min-w-0 px-5 py-5 sm:w-[68%] sm:px-10 md:w-[60%] lg:w-[58%] lg:px-12">
+        <div className="relative z-10 w-full min-w-0 px-5 py-6 sm:px-8 md:px-6 md:py-8 lg:px-14">
           <div className="min-w-0">
             <h1 className="max-w-3xl text-balance font-display text-[clamp(1.7rem,4.2vh,2.8rem)] font-semibold leading-[1.05] tracking-[-0.045em] text-white [text-shadow:0_1px_12px_rgba(0,0,0,0.55)]">
               Your AI Property Caretaker.
             </h1>
-            <ul className="mt-3 max-w-2xl space-y-1.5 font-display text-[clamp(0.92rem,2vh,1.28rem)] font-bold leading-snug tracking-[-0.03em] text-white [text-shadow:0_1px_10px_rgba(0,0,0,0.6)]">
+            <ul className="mt-4 grid grid-cols-1 gap-y-1.5 font-display text-[clamp(0.92rem,2vh,1.28rem)] font-bold leading-snug tracking-[-0.03em] text-white [text-shadow:0_1px_10px_rgba(0,0,0,0.6)] md:mt-5 md:grid-cols-2 md:gap-x-6 md:gap-y-2.5 lg:gap-x-16">
               {PROMISES.map((line) => (
-                <li key={line}>{line}</li>
+                <li key={line} className="min-w-0">
+                  {line}
+                </li>
               ))}
             </ul>
-            <p className="mt-2 max-w-2xl text-[clamp(0.8rem,1.7vh,1rem)] font-semibold leading-relaxed text-[var(--gv-signal)] [text-shadow:0_1px_8px_rgba(0,0,0,0.55)]">
-              VergeCare gets things sorted.
-            </p>
             {checkInHref ? (
-              <div className="mt-4">
+              <div className="mt-5 md:mt-6">
                 <CheckInLink href={checkInHref} label={ctaLabel} />
               </div>
             ) : null}
             <ul
-              className="mt-4 flex flex-wrap gap-2"
+              className="mt-4 flex flex-wrap gap-2 md:mt-5 md:flex-nowrap"
               aria-label="Who VergeCare is for"
             >
               {AUDIENCE.map((label) => (
-                <li key={label}>
-                  <span className="inline-flex border border-white/25 px-3 py-2 text-xs font-semibold tracking-[0.04em] text-white/90">
+                <li key={label} className="shrink-0">
+                  <span className="inline-flex whitespace-nowrap border border-white/25 px-3 py-2 text-xs font-semibold tracking-[0.04em] text-white/90 [text-shadow:0_1px_8px_rgba(0,0,0,0.55)]">
                     {label}
                   </span>
                 </li>
