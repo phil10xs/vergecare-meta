@@ -115,6 +115,8 @@ The Issues & Bills Tracker Board:
 - **Automated end-to-end:** `pnpm test:e2e` submits a check-in against a
   running server, walks report → snag list → magic-link board, moves a card
   to Paid, then cleans up.
+- **Golden-clip eval:** `pnpm eval` scores Spark trade/severity accuracy on
+  human-labeled clips (see `eval/README.md`).
 - **Gates:** `pnpm typecheck`, `pnpm lint`, `pnpm test`,
   `pnpm check:secrets` (fails the push if a Meta-style key or private key
   appears in tracked files).
