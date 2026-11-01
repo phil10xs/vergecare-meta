@@ -9,6 +9,7 @@ Built for the **Meta AI Global Hackathon 2026** — **Indie track**.
 
 **Live product demo:** https://demo-vergecare.goverge.app/request
 (hosted VergeCare Beta — this repo is the source-available build of the same app) ·
+**Create yours:** https://demo-vergecare.goverge.app/request ·
 **VergeCare Demo (Beta)- Meta Global AI Hackathon 2026:** https://youtu.be/aHLs56BK9LY
 
 [![Watch the VergeCare demo](public/images/vergecare-demo-thumbnail.jpg)](https://youtu.be/aHLs56BK9LY)
