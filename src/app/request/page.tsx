@@ -24,7 +24,7 @@ const TESTIMONIALS = [
   },
   {
     quote:
-      "Snag rounds used to die in WhatsApp. Now every issue stays with the property.",
+      "Snag rounds used to die in WhatsApp. Now every repair issue stays with the property.",
     name: "Tom W.",
     role: "Property manager",
   },
@@ -45,7 +45,7 @@ const STEPS = [
   {
     number: "02",
     title: "Get your snag list",
-    body: "VergeCare spots the issues and organises everything that needs fixing.",
+    body: "VergeCare spots the repair issues and organises everything that needs fixing.",
   },
   {
     number: "03",
@@ -158,7 +158,7 @@ export default function PublicRequestPage() {
             See VergeCare in action.
           </h2>
           <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground">
-            From spotting issues to finding the right handyman, see how
+            From spotting repair issues to finding the right handyman, see how
             VergeCare helps you look after your property.
           </p>
           <div className="mt-8 overflow-hidden rounded-2xl border border-border bg-[#071617]">
@@ -303,7 +303,7 @@ export default function PublicRequestPage() {
                 Every property has a story.
               </h2>
               <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-                VergeCare remembers every issue, repair and little detail that
+                VergeCare remembers every repair issue and little detail that
                 helps you look after it.
               </p>
             </div>
