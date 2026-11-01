@@ -3,7 +3,7 @@
 Models: `muse-spark-1.2` (video understanding + text-only triage) via
 `https://api.meta.ai`. Command: `EVAL_CLIPS=<folder> pnpm eval`.
 
-**Score: trade 5/6 (83%), severity 3/6 (50%), skipped 0.**
+**Latest score (run 2): trade 6/6 (100%), severity 3/6 (50%), skipped 0.**
 
 | Clip | Want | Got | Trade | Severity | Heard (excerpt) |
 |---|---|---|---|---|---|
@@ -12,7 +12,12 @@ Models: `muse-spark-1.2` (video understanding + text-only triage) via
 | eval_03_carpenter_high | Carpenter / high | Carpenter / low | ✓ | ✗ | "…my cupboard … broken just fell off yesterday…" |
 | eval_04_painter_high | Painter / high | Painter / high | ✓ | ✓ | "…this wall will definitely need painting … it's damped…" |
 | eval_05_cleaner_low | Cleaner / low | Cleaner / low | ✓ | ✓ | "My hob's plate has some scars…" |
-| eval_06_window_fitter_high | Joiner / high | General / low | ✗ | ✗ | "…my window shade doesn't get down to the ground…" |
+| eval_06_window_fitter_high | Joiner / high | Joiner / low | ✓ | ✗ | "…my window shade doesn't get down to the ground…" |
+
+Run history:
+
+- Run 1: trade 5/6 (83%), severity 3/6 (50%) — clip 06 returned General.
+- Run 2: trade 6/6 (100%), severity 3/6 (50%) — clip 06 returned Joiner.
 
 Notes:
 

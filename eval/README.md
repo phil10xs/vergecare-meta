@@ -4,7 +4,7 @@ The smallest honest measure of the Meta path: human-labeled property clips,
 run through the real `analyzeVideo` + `assessIssue` functions, scored on
 trade and severity accuracy.
 
-**Latest scoreboard: [RESULTS.md](RESULTS.md)** — trade 5/6 (83%),
+**Latest scoreboard: [RESULTS.md](RESULTS.md)** — trade 6/6 (100%),
 severity 3/6 (50%) on 2026-11-01.
 
 ## Clips (6, human-labeled by filename)
