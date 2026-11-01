@@ -1,110 +1,183 @@
-# VergeCare (Beta)
+# VergeCare(Beta) — Your AI Property Caretaker
 
-Property check-ins for the Meta AI Global Hackathon (indie track).
-VergeCare is an AI caretaker for your property: check in, get an
-organized Issues snag list and Issues & Bills Tracker Board in under a
-minute — every visit remembered.
+> Film a repair issue, narrate what you see, and get a costed snag list plus an Issues & Bills Tracker Board in under a minute — every visit remembered.
 
-Standalone project with its own VergeCare brand mark, button
-variants, status badges, page header, and list hero.
+[![License: BSL 1.1](https://img.shields.io/badge/license-BSL_1.1-blue)](LICENSE)
 
-## Stack
+Built for the **Meta AI Global Hackathon 2026** — **Indie track**.
+**Category:** Business, Finance & Operations · Multimodal end-to-end agentic AI.
 
-- Next.js 15 + React 19 + TypeScript (web only, port **3002**)
-- Tailwind CSS v4
-- PostgreSQL 16 via Drizzle ORM (database `vergefield` on local Postgres;
-  docker-compose alternative runs isolated on port **5433**)
+**Live product demo:** https://demo-vergecare.goverge.app/request
+(hosted VergeCare Beta — this repo is the source-available build of the same app) ·
+**Demo video:** https://youtu.be/aHLs56BK9LY
 
-Port 3002 avoids clashing with other local apps on 3000/3001.
+[![Watch the VergeCare demo](https://i.ytimg.com/vi/aHLs56BK9LY/maxresdefault.jpg)](https://youtu.be/aHLs56BK9LY)
 
-## Setup
+## At a glance for judges
+
+| Criterion | Where the evidence is |
+|---|---|
+| **Impact (30%)** — real-world potential, who benefits, problem fit | Property repairs die in chat threads while damp and disrepair compound. VergeCare turns one filmed check-in into a costed snag list and a bills-to-paid board for landlords, homeowners, managers and tenants. See [The problem](#the-problem) and [What it does](#what-it-does). |
+| **Meta AI tooling (25%)** — creative use beyond a basic integration | Two Muse Spark passes per clip (video understanding, then text-only triage reasoning) plus SAM 3.1 damage grounding, all through the Meta Model API — with a deterministic engine underneath so every session is filed even when AI is unavailable. See [Meta AI tooling](#meta-ai-tooling). |
+| **Technical depth (20%)** — sound, refined engineering | Next.js 15 + TypeScript, 120 unit tests (19 files, vitest, all passing) plus an automated end-to-end script, typecheck + lint + secrets gates, mobile-first adaptive UI. See [Engineering depth](#engineering-depth) and [Architecture](#architecture). |
+| **Demo (25%)** — working product, live, video | Live deployment, demo video above, one-command local quickstart that runs with no API keys, and a 5-minute seeded demo path. See [Quickstart](#quickstart) and [Demo in 5 minutes](#demo-in-5-minutes). |
+
+## The problem
+
+Landlords, homeowners, property managers and tenants all lose repair issues the
+same way: a tenant films damp on WhatsApp, the clip scrolls away, the plumber
+never gets booked, and the wall gets worse. Bills are chased across the same
+lost threads. Across one home or a whole portfolio, the property itself keeps
+no memory — every visit starts from zero.
+
+VergeCare gives the property a memory. One filmed check-in becomes an
+organized Issues snag list (trade, severity, likely cost on every issue) and
+an Issues & Bills Tracker Board that follows each fix from Requested to Paid.
+No accounts, no passwords for the people watching a repair move: the board
+travels on a magic link.
+
+## What it does
+
+1. **Check in** — show VergeCare around the property. Film one short clip per
+   issue (≤20 s each) and narrate what you see as you film.
+2. **Get your snag list** — seconds later, every issue is listed with its
+   trade, severity grade and likely UK cost band.
+3. **Track it to Paid** — the property's board moves each card Requested → In
+   progress → Completed → Paid; recording an amount marks the bill.
+4. **Remember everything** — every clip, report and bill stays with the
+   property, visit after visit.
+
+## Meta AI tooling
+
+Every clip runs a three-stage Meta pipeline through the Meta Model API
+(`https://api.meta.ai`), using two Meta model families:
+
+| Stage | Model | What it returns |
+|---|---|---|
+| 1. Video understanding | `muse-spark-1.2` | Verbatim speech transcript, 2–3 sentence visual description of the damage, the trade (1 of 16, from plumber to roofer), and the damaged object in 1–3 words |
+| 2. Triage reasoning | `muse-spark-1.2` (text-only, cheap) | Severity grade (`low` / `medium` / `high`) plus a rough UK handyman cost band (e.g. £40–£120) for landlords |
+| 3. Damage grounding | `sam-3.1` | Up to 3 normalized bounding boxes around the named damage on a still frame |
+
+Beyond a basic integration:
+
+- **Two-pass reasoning, not one prompt.** Perception (stage 1) is separated
+  from judgement (stage 2), so triage stays cheap, structured (`severity` +
+  `cost_band` JSON) and landlord-specific.
+- **Vision that points.** SAM 3.1 grounds the Spark-named object to regions on
+  the frame, so the report shows *where* the damage is, not just what it is.
+- **Agentic handoffs with human approval.** AI proposes the trade and cost;
+  the tradesman confirms or corrects them, and the owner approves handyman
+  and price before work starts.
+- **Graceful by design.** Every Meta call is null-safe: if a pass fails or no
+  API key is set, the deterministic engine (`src/lib/media-inference.ts`,
+  `media-rules.ts`, `report-sections.ts`) still titles, files and groups
+  every session. The product never dead-ends on AI.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    A[Phone films + narrates<br/>≤20s per issue] --> B["/request/checkin"]
+    B --> C[Server action:<br/>store media + frames]
+    C --> D["Muse Spark 1.2<br/>video understanding"]
+    D --> E["Muse Spark 1.2<br/>triage reasoning"]
+    D --> F["SAM 3.1<br/>damage grounding"]
+    D -.->|null-safe| G["Deterministic engine<br/>title + file + group"]
+    E -.->|null-safe| G
+    F -.->|optional| H["Visit report<br/>snag list + analysis"]
+    G --> H
+    H --> I["Tracker board<br/>Requested → Paid"]
+    I --> J[Magic link<br/>no account]
+```
+
+## Screenshots
+
+Neglected house before check-in:
+
+![Neglected UK house with mould, bad sink and broken window close-ups](public/images/checkin-before.jpg)
+
+The same property cared for after:
+
+![Cared-for UK house with fixed wall, sink and window close-ups](public/images/checkin-after.jpg)
+
+The Issues & Bills Tracker Board:
+
+![Property board with requested, in progress, completed and paid cards](public/images/board-preview.png)
+
+## Engineering depth
+
+- **Stack:** Next.js 15 + React 19 + TypeScript, Tailwind CSS v4,
+  PostgreSQL 16 via Drizzle ORM. Web only, port **3002** (avoids clashing
+  with apps on 3000/3001).
+- **120 unit tests, 19 files** (vitest, all passing): payments, board flow,
+  sessions, report sections, media inference, email.
+- **Automated end-to-end:** `pnpm test:e2e` submits a check-in against a
+  running server, walks report → snag list → magic-link board, moves a card
+  to Paid, then cleans up.
+- **Gates:** `pnpm typecheck`, `pnpm lint`, `pnpm test`,
+  `pnpm check:secrets` (fails the push if a Meta-style key or private key
+  appears in tracked files).
+- **Mobile-first:** single-column forms, 44px touch targets, native camera
+  capture on phones degrading to pickers on desktop, horizontally scrolling
+  board on narrow screens.
+
+## Quickstart
+
+Prerequisites: Node.js 20+, pnpm 9+, PostgreSQL 16 with a `vergefield`
+database (`createdb vergefield`) — or `docker compose up -d` for the
+isolated container on port 5433.
 
 ```bash
-cd /Users/igbobaphilip/Projects/vergefield-os
-
-# 1. Postgres: local Homebrew instance (default, database `vergefield`),
-#    or `docker compose up -d` for the isolated container on port 5433
-#    (then use the docker DATABASE_URL from .env.example).
-createdb vergefield   # once; skip if the database already exists
-
-# 2. Install
+# 1. Install
 pnpm install
 
-# 3. Push schema + seed demo data
+# 2. Push schema + seed demo data
 pnpm db:push
 pnpm db:seed
 
-# 4. Run
-pnpm dev
+# 3. Run (no API keys needed — AI blocks show as unavailable)
+pnpm dev   # → http://localhost:3002
 ```
 
-Open [http://localhost:3002](http://localhost:3002) in a browser.
 Full walkthrough (env keys, seed contents, click path) is in
 [instruction.md](./instruction.md).
 
-## Checks
-
-- `pnpm typecheck` — TypeScript
-- `pnpm lint` — ESLint
-- `pnpm test` — unit tests (vitest)
-- `pnpm test:e2e` — end-to-end flow against a running server (see below)
-- `GET /api/health` — app + database status (`{"ok":true,"db":"up"}`)
-
-## Layout
-
-```
-src/app            Routes: / (→ /request), /request (check-in landing),
-                   /request/checkin (film + submit), /request/[id] (visit report),
-                   /track (Issues snag list + board views), /b/[token] (magic-link
-                   properties, snag list and board), /api/health, /api/media
-src/components     VergeCare UI: brand mark, button, status badges, page header,
-                   app shell, board, capture
-src/lib            Trade inference, board flow, payments, report sections,
-                   session grouping
-src/server         Reporting, media storage, board access, email, SAM grounding
-src/db             Drizzle client + schema (job, site_report, site_media,
-                   board_token, …)
-src/styles         Brand tokens (colours)
-scripts/seed.ts    Demo seed data (loads scripts/demo-fixture.json)
-```
-
-## Check-in flow
-
-Check in → Visit report → Track → Board. Landlords, owners, managers and
-tenants check in a property from `/request`: address, then one video per
-issue narrating what they see — a video is enough to submit. Each video
-becomes a session — trade auto-detected, reference issued — grouped under
-its visit on the visit report (`/request/[id]`), with an Issues snag list
-and a Meta Spark analysis block. `/track` holds every property's Issues snag
-list; from the report, "View Board" opens the property's magic-link
-Issues & Bills Tracker Board — no account, no password. Move cards
-Requested → In progress → Completed → Paid; recording an amount marks the
-bill. Uploads stay on this machine under `uploads/`.
-
-Every screen is mobile-first and adaptive across phone, tablet, and laptop:
-single-column forms, 44px touch targets, native camera capture on phones
-degrading to pickers on desktop, and a horizontally scrolling board on
-narrow screens.
-
-## Meta video understanding
-
-Each uploaded video gets two Meta (Muse Spark) passes: first video
-understanding returns a speech transcript, a visual description, the trade,
-and the object in frame; then a text-only triage pass grades severity
-(low/medium/high) and a rough UK cost band. SAM 3.1 grounds the named
-object to regions on a still frame. Either pass can fail silently — the
-deterministic engine still titles and files every session.
-
-Setup: add your Meta Model API key to `.env.local`:
+To enable live Meta analysis, add a key to `.env.local`:
 
 ```bash
 META_MODEL_API_KEY=LLM_...
 ```
 
-Without a key (or if analysis fails), requests still work end to end —
-transcripts show as unavailable and the team uses the note plus the video's
-own voice. Duration (20 s) and the one-video rule are enforced in the browser
-before submit, with a server-side one-video backstop.
+Duration (20 s) and the one-video rule are enforced in the browser before
+submit, with a server-side backstop.
+
+## Demo in 5 minutes
+
+```bash
+pnpm db:seed   # reset to the 6-check-in mock fixture
+pnpm dev       # http://localhost:3002
+```
+
+1. Landlord: open `/request`, start a check-in, enter the address, film one
+   ≤20 s video per issue narrating what you see, send.
+2. Visit report at `/request/[id]` — sessions, Issues snag list, Meta Spark
+   analysis.
+3. Snag list at `/track` — every property's visits and sessions.
+4. View Board from the report — the property's Issues & Bills Tracker
+   Board; move a card through to Paid with Pay now.
+
+Prefer watching? The [demo video](https://youtu.be/aHLs56BK9LY) walks the
+same path end to end.
+
+## Check-in flow
+
+Check in → Visit report → Track → Board. A video is enough to submit: each
+becomes a session — trade auto-detected, reference issued — grouped under
+its visit on the visit report, with an Issues snag list and a Meta Spark
+analysis block. `/track` holds every property's Issues snag list; from the
+report, "View Board" opens the property's magic-link Issues & Bills Tracker
+Board — no account, no password. Uploads stay on the machine under
+`uploads/`.
 
 ## Magic-link email (optional)
 
@@ -112,6 +185,14 @@ With SES configured (`SES_FROM_EMAIL` + AWS credentials in `.env.local`),
 View Board emails the landlord link and opens the board. Without it, the UI
 says nothing was sent and still opens the board on-screen — the demo never
 needs email.
+
+## Honest limitations
+
+- No fine-tuning yet: the pipeline uses Meta's hosted models as-is, with a
+  deterministic engine underneath.
+- Photos skip AI analysis today; only video clips run the Meta passes.
+- SAM regions are optional enrichment — the board never depends on them.
+- Single-node uploads under `uploads/`; magic links expire after 7 days.
 
 ## Public repo vs private build
 
@@ -130,25 +211,7 @@ grounding — runs fully from this branch.
 
 What can be pushed: all source, docs, and config. What stays local: API keys
 and credentials in `.env.local` (gitignored), `*.pem` / `*.key` files, and
-anything under `secrets/`. The demo runs fully without a key (Meta analysis
-shows as unavailable); with `META_MODEL_API_KEY` set locally, video analysis
-goes live. Run `pnpm check:secrets` before every push — it fails if a
-Meta-style key or private key appears in tracked files.
-
-## Demo in 5 minutes
-
-```bash
-pnpm db:seed   # reset to the 6-check-in mock fixture
-pnpm dev       # http://localhost:3002
-```
-
-1. Landlord: open `/request`, start a check-in, enter the address, film one
-   ≤20 s video per issue narrating what you see, send.
-2. Visit report at `/request/[id]` — sessions, Issues snag list, Meta Spark
-   analysis.
-3. Snag list at `/track` — every property's visits and sessions.
-4. View Board from the report — the property's Issues & Bills Tracker
-   Board; move a card through to Paid with Pay now.
+anything under `secrets/`. Run `pnpm check:secrets` before every push.
 
 ## Pre-submit test
 
