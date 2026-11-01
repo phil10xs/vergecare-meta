@@ -152,6 +152,9 @@ META_MODEL_API_KEY=LLM_...
 Duration (20 s) and the one-video rule are enforced in the browser before
 submit, with a server-side backstop.
 
+Prefer Docker for the app itself: `docker build -t vergecare .`, then run it
+with `DATABASE_URL` pointing at your Postgres (see `.env.example`).
+
 ## Demo in 5 minutes
 
 ```bash
@@ -201,14 +204,6 @@ With SES configured (`SES_FROM_EMAIL` + AWS credentials in `.env.local`),
 View Board emails the landlord link and opens the board. Without it, the UI
 says nothing was sent and still opens the board on-screen — the demo never
 needs email.
-
-## Honest limitations
-
-- No fine-tuning yet: the pipeline uses Meta's hosted models as-is, with a
-  deterministic engine underneath.
-- Photos skip AI analysis today; only video clips run the Meta passes.
-- SAM regions are optional enrichment — the board never depends on them.
-- Single-node uploads under `uploads/`; magic links expire after 7 days.
 
 ## Public repo vs private build
 

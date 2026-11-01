@@ -179,6 +179,7 @@ try {
   // 2b. Judge video mode: prove the live Meta path ran. Cost band and SAM
   // boxes stay informational — the model may legitimately return neither
   // for ambiguous clips.
+  let resolvedTrade = null;
   if (upload.real) {
     const [probed] = await sql`
       SELECT j.severity, j.cost_band, j.tradesman_trade, m.transcript, m.regions
@@ -196,6 +197,7 @@ try {
       ["low", "medium", "high"].includes(probed.severity),
     );
     check("trade resolved", !!probed.tradesman_trade);
+    resolvedTrade = probed.tradesman_trade;
   }
 
   // 3. Snag list shows the session; mint a magic-link token for the board.
@@ -224,12 +226,14 @@ try {
     `HTTP ${props.status}`,
   );
   const board = await get(boardPath);
+  // Fake clip never resolves a trade; a real clip must show its resolved one.
+  const tradeShown = upload.real
+    ? !!resolvedTrade && board.text.includes(resolvedTrade)
+    : board.text.includes("Trade detecting") ||
+      board.text.includes("General");
   check(
     "board shows the card as Requested",
-    board.status === 200 &&
-      board.text.includes("Requested") &&
-      (board.text.includes("Trade detecting") ||
-        board.text.includes("General")),
+    board.status === 200 && board.text.includes("Requested") && tradeShown,
     `HTTP ${board.status}`,
   );
 
