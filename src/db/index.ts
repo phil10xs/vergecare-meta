@@ -14,7 +14,7 @@ const client =
   globalForDb.postgresClient ??
   postgres(connectionString, {
     prepare: false,
-    max: 10,
+    max: process.env.NODE_ENV === "production" ? 1 : 10,
   });
 
 if (process.env.NODE_ENV !== "production") {

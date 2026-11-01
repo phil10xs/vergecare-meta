@@ -11,7 +11,6 @@ import {
 import {
   classifyLandlordContact,
   isBoardTokenShape,
-  jobsForLandlord,
   normalizeContact,
 } from "@/lib/board-token";
 import { sessionAddress, visitDayOf } from "@/lib/sessions";
@@ -339,14 +338,32 @@ export async function getLandlordAccess(token: string): Promise<
   if (!link) return undefined;
 
   const [anchor] = await db.select().from(job).where(eq(job.id, link.jobId));
-  const jobs = await db.select().from(job).orderBy(asc(job.createdAt));
+  const contacts = new Set<string>();
+  const email = normalizeContact(link.email);
+  if (email) contacts.add(email);
+  if (anchor?.requesterContact) {
+    const anchorContact = normalizeContact(anchor.requesterContact);
+    if (anchorContact) contacts.add(anchorContact);
+  }
+  const contactList = [...contacts];
+  // Same match as jobsForLandlord: link email plus the visit the link was opened from.
+  const jobs =
+    contactList.length === 0
+      ? []
+      : await db
+          .select()
+          .from(job)
+          .where(
+            inArray(
+              sql`lower(btrim(${job.requesterContact}))`,
+              contactList,
+            ),
+          )
+          .orderBy(asc(job.createdAt));
   return {
     token: link.token,
     email: link.email,
-    jobs: jobsForLandlord(jobs, {
-      email: link.email,
-      anchorContact: anchor?.requesterContact,
-    }),
+    jobs,
   };
 }
 
