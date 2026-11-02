@@ -14,6 +14,12 @@ Built for the **Meta AI Global Hackathon 2026** — **Indie track**.
 
 [![Watch the VergeCare demo](public/images/vergecare-demo-thumbnail.jpg)](https://youtu.be/aHLs56BK9LY)
 
+## Result tracking
+
+**Live:** https://result-page-preview.vercel.app/result
+
+Standalone VergeCare demo and eval tracker (Vercel project `result-page-preview`), separate from `demo-vergecare` / https://demo.vergecare.goverge.app, so it is never deployed over the shared demo.
+
 ## At a glance for judges
 
 | Criterion | Where the evidence is |
