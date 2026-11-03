@@ -10,9 +10,9 @@ Built for the **Meta AI Global Hackathon 2026** — **Indie track** · Built fro
 **Live product demo:** [demo-vergecare.goverge.app/request](https://demo-vergecare.goverge.app/request)
 (hosted VergeCare Beta — this repo is the source-available build of the same app) ·
 **Create yours:** [demo-vergecare.goverge.app/request](https://demo-vergecare.goverge.app/request) ·
-**VergeCare Demo (Beta) — Meta Global AI Hackathon 2026:** [youtu.be/aHLs56BK9LY](https://youtu.be/aHLs56BK9LY)
+**VergeCare Demo (Beta) — Meta Global AI Hackathon 2026:** [youtu.be/Q40uPN17o5Q](https://youtu.be/Q40uPN17o5Q)
 
-[![Watch the VergeCare demo](public/images/vergecare-demo-thumbnail.jpg)](https://youtu.be/aHLs56BK9LY)
+[![Watch the VergeCare demo](public/images/vergecare-demo-thumbnail.jpg)](https://youtu.be/Q40uPN17o5Q)
 
 ## Result tracking
 
@@ -187,7 +187,7 @@ pnpm dev       # http://localhost:3002
 4. View Board from the report — the property's Issues & Bills Tracker
    Board; move a card through to Paid with Pay now.
 
-Prefer watching? The [demo video](https://youtu.be/aHLs56BK9LY) walks the
+Prefer watching? The [demo video](https://youtu.be/Q40uPN17o5Q) walks the
 same path end to end.
 
 On desktop with no clips handy, download the base e2e test clip
