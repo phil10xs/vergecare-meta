@@ -41,14 +41,14 @@ process.env.META_MODEL_API_KEY = key;
 // Mirror of TRADE_CHOICES in src/server/analyze-video.ts (labels must be choices).
 // Aliases map everyday trade names to their nearest choice (human decision,
 // applied before scoring and printed per clip so the mapping stays visible).
-const TRADE_ALIASES = {
-  // Clip 06 shows a window blind/shade mechanism (joinery), not glass.
-  "window fitter": "joiner",
-};
+// Window fitter is a real 17th choice now (ported from the demo Nov 3), so
+// blind/shade clips label directly — no alias. (Nov 3, briefly: blinds were
+// aliased joiner→carpenter as closest-of-16; see RESULTS.md run history.)
+const TRADE_ALIASES = {};
 const CHOICES = [
   "plumber", "electrician", "carpenter", "heating engineer", "gas engineer",
-  "painter", "plasterer", "roofer", "tiler", "joiner", "bricklayer",
-  "welder", "scaffolder", "gardener", "cleaner", "general",
+  "painter", "plasterer", "roofer", "tiler", "joiner", "window fitter",
+  "bricklayer", "welder", "scaffolder", "gardener", "cleaner", "general",
 ];
 
 function parseLabel(file) {

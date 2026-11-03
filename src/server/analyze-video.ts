@@ -14,6 +14,7 @@ const TRADE_CHOICES = [
   "Roofer",
   "Tiler",
   "Joiner",
+  "Window fitter",
   "Bricklayer",
   "Welder",
   "Scaffolder",

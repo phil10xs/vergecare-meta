@@ -44,7 +44,7 @@ describe("analyzeVideo", () => {
       JSON.stringify({
         transcript: "blinds leave a gap",
         description: "Vertical blinds over a large window.",
-        trade: "joiner",
+        trade: "window fitter",
         object: "blinds",
       }),
     );
@@ -53,7 +53,7 @@ describe("analyzeVideo", () => {
     ).resolves.toEqual({
       transcript: "blinds leave a gap",
       description: "Vertical blinds over a large window.",
-      trade: "Joiner",
+      trade: "Window fitter",
       object: "blinds",
     });
   });
