@@ -4,13 +4,13 @@
 
 [![License: BSL 1.1](https://img.shields.io/badge/license-BSL_1.1-blue)](LICENSE)
 
-Built for the **Meta AI Global Hackathon 2026** — **Indie track**.
+Built for the **Meta AI Global Hackathon 2026** — **Indie track** · Built from scratch Oct 28 – Nov 4, 2026, inside the hackathon window.
 **Category:** Business, Finance & Operations · Multimodal end-to-end agentic AI.
 
-**Live product demo:** https://demo-vergecare.goverge.app/request
+**Live product demo:** [demo-vergecare.goverge.app/request](https://demo-vergecare.goverge.app/request)
 (hosted VergeCare Beta — this repo is the source-available build of the same app) ·
-**Create yours:** https://demo-vergecare.goverge.app/request ·
-**VergeCare Demo (Beta)- Meta Global AI Hackathon 2026:** https://youtu.be/aHLs56BK9LY
+**Create yours:** [demo-vergecare.goverge.app/request](https://demo-vergecare.goverge.app/request) ·
+**VergeCare Demo (Beta) — Meta Global AI Hackathon 2026:** [youtu.be/aHLs56BK9LY](https://youtu.be/aHLs56BK9LY)
 
 [![Watch the VergeCare demo](public/images/vergecare-demo-thumbnail.jpg)](https://youtu.be/aHLs56BK9LY)
 
