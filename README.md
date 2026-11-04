@@ -9,7 +9,7 @@ Built for the **Meta AI Global Hackathon 2026** — **Indie track** · Built fro
 
 **Live product demo:** [demo-vergecare.goverge.app/request](https://demo-vergecare.goverge.app/request)
 (hosted VergeCare Beta — this repo is the source-available build of the same app) ·
-**Create yours:** [demo-vergecare.goverge.app/request](https://demo-vergecare.goverge.app/request) ·
+**Create yours:** [demo-vergecare.goverge.app/request/checkin](https://demo-vergecare.goverge.app/request/checkin) ·
 **VergeCare Demo (Beta) — Meta Global AI Hackathon 2026:** [youtu.be/Q40uPN17o5Q](https://youtu.be/Q40uPN17o5Q)
 
 [![Watch the VergeCare demo](public/images/vergecare-demo-thumbnail.jpg)](https://youtu.be/Q40uPN17o5Q)
@@ -24,7 +24,7 @@ Standalone VergeCare demo and eval tracker (Vercel project `result-page-preview`
 
 | Criterion | Where the evidence is |
 |---|---|
-| **Impact** — real-world potential, who benefits, problem fit | Property repairs die in chat threads while damp and disrepair compound. VergeCare turns one filmed check-in into a costed snag list, a matched handyman, and a bills-to-paid board for landlords, homeowners, managers and tenants, with a property manager on the waiting list and 2 homes onboarded. See [The problem](#the-problem) and [What it does](#what-it-does). |
+| **Impact** — real-world potential, who benefits, problem fit | Property repairs die in chat threads while damp and disrepair compound. VergeCare turns one filmed check-in into a costed snag list, a matched handyman, and a bills-to-paid board for landlords, homeowners, managers and tenants, with 7 users on the live demo, 10/10 check-ins reaching a snag list, and eval clips from 3 real homes. See [The problem](#the-problem) and [What it does](#what-it-does). |
 | **Meta AI tooling** — creative use beyond a basic integration | Two Muse Spark passes per clip (video understanding, then text-only triage reasoning) plus SAM 3.1 damage grounding, all through the Meta Model API — with a deterministic engine underneath so every session is filed even when AI is unavailable. See [Meta AI tooling](#meta-ai-tooling). |
 | **Technical depth** — sound, refined engineering | Next.js 15 + TypeScript, 120 unit tests (19 files, vitest, all passing) plus an automated end-to-end script, typecheck + lint + secrets gates, mobile-first adaptive UI. See [Engineering depth](#engineering-depth) and [Architecture](#architecture). |
 | **Demo** — working product, live, video | Live deployment, demo video above, one-command local quickstart that runs with no API keys, and a 5-minute seeded demo path. See [Quickstart](#quickstart) and [Demo in 5 minutes](#demo-in-5-minutes). |
@@ -45,9 +45,10 @@ repair move: the board travels on a magic link.
 
 ## Traction (Nov 2026)
 
+- 7 users on the live demo; 34 check-in videos stored.
+- 10/10 check-in attempts reached a costed snag list.
+- Eval set spans 3 real homes (Derby, London, Texas); names withheld.
 - A property manager on the waiting list.
-- 2 homes onboarded.
-- 6 repair issues tracked through snag lists and boards.
 
 ## What it does
 
