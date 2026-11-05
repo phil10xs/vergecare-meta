@@ -1,6 +1,6 @@
 # VergeCare(Beta) — Your AI Property Caretaker
 
-> Film a repair issue or a wish-to-have, narrate what you see, and get a costed snag or wish list, a matched handyman or stores, and an Issues & Bills Tracker Board in under a minute — every visit remembered.
+> Film a repair issue or a wish-to-have, narrate what you see, and get a costed snag or wish list, a matched handyman or stores, and a Repair & Wish Bill Tracker, tracked till paid, in under a minute — every visit remembered.
 
 [![License: BSL 1.1](https://img.shields.io/badge/license-BSL_1.1-blue)](LICENSE)
 
@@ -10,7 +10,8 @@ Built for the **Meta AI Global Hackathon 2026** — **Indie track** · Built fro
 **Live product demo:** [demo-vergecare.goverge.app/request](https://demo-vergecare.goverge.app/request)
 (hosted VergeCare Beta — this repo is the source-available build of the same app) ·
 **Create yours:** [demo-vergecare.goverge.app/request/checkin](https://demo-vergecare.goverge.app/request/checkin) ·
-**VergeCare Demo (Beta) — Meta Global AI Hackathon 2026:** [youtu.be/Q40uPN17o5Q](https://youtu.be/Q40uPN17o5Q)
+**VergeCare Demo (Beta) — Meta Global AI Hackathon 2026:** [youtu.be/Q40uPN17o5Q](https://youtu.be/Q40uPN17o5Q) ·
+**Judges:** [try it yourself in 3 minutes, no signup](JUDGING.md#try-it-yourself-in-3-minutes-no-signup)
 
 [![Watch the VergeCare demo](public/images/vergecare-demo-thumbnail.jpg)](https://youtu.be/Q40uPN17o5Q)
 
@@ -24,15 +25,15 @@ Standalone VergeCare demo and eval tracker (Vercel project `result-page-preview`
 
 | Criterion | Where the evidence is |
 |---|---|
-| **Impact** — real-world potential, who benefits, problem fit | Property repairs die in chat threads while damp and disrepair compound — and wishes never get recorded at all. VergeCare turns one filmed check-in — a repair issue or a wish-to-have — into a costed snag or wish list, a matched handyman or stores, and a bills-to-paid board for landlords, homeowners, managers and tenants, with 7 users on the live demo, 10/10 check-ins reaching a snag list, and eval clips from 3 real homes. See [The problem](#the-problem) and [What it does](#what-it-does). |
+| **Impact** — real-world potential, who benefits, problem fit | Property repairs die in chat threads while damp and disrepair compound — and wishes never get recorded at all. VergeCare turns one filmed check-in — a repair issue or a wish-to-have — into a costed snag or wish list, a matched handyman or stores, and a bills-to-paid board for landlords, homeowners, managers and residents, with 7 users on the live demo, 10/10 check-ins reaching a snag list, and eval clips from 3 real homes. See [The problem](#the-problem) and [What it does](#what-it-does). |
 | **Meta AI tooling** — creative use beyond a basic integration | Two Muse Spark passes per clip (video understanding, then text-only triage reasoning) plus SAM 3.1 damage grounding, all through the Meta Model API — with a deterministic engine underneath so every session is filed even when AI is unavailable. See [Meta AI tooling](#meta-ai-tooling). |
 | **Technical depth** — sound, refined engineering | Next.js 15 + TypeScript, 135 unit tests (22 files, vitest, all passing) plus an automated end-to-end script, typecheck + lint + secrets gates, mobile-first adaptive UI. See [Engineering depth](#engineering-depth) and [Architecture](#architecture). |
 | **Demo** — working product, live, video | Live deployment, demo video above, one-command local quickstart that runs with no API keys, and a 5-minute seeded demo path. See [Quickstart](#quickstart) and [Demo in 5 minutes](#demo-in-5-minutes). |
 
 ## The problem
 
-Landlords, homeowners, property managers and tenants all lose repair issues the
-same way: a tenant films damp on WhatsApp, the clip scrolls away, the plumber
+Landlords, homeowners, property managers and residents all lose repair issues the
+same way: a resident films damp on WhatsApp, the clip scrolls away, the plumber
 never gets booked, and the wall gets worse. Bills are chased across the same
 lost threads. Wish-to-haves never even make it that far — the couch, the
 chandelier, the work desk stay as passing remarks. Across one home or a
@@ -42,7 +43,7 @@ from zero.
 VergeCare gives the property a memory. One filmed check-in — a repair issue
 or a wish-to-have — becomes an organized snag or wish list (trade, severity,
 likely cost on every issue; matched stores on every wish), a matched handyman,
-and an Issues & Bills Tracker Board that follows each fix or wish from
+and a Repair & Wish Bill Tracker that follows each fix or wish from
 Requested to Paid. No accounts, no passwords for the people watching a
 repair or wish move: the board travels on a magic link.
 
@@ -122,7 +123,7 @@ The same property cared for after:
 
 ![Cared-for UK house with fixed wall, sink and window close-ups](public/images/checkin-after.jpg)
 
-The Issues & Bills Tracker Board:
+The Repair & Wish Bill Tracker (tracked till paid):
 
 ![Property board with requested, in progress, completed and paid cards](public/images/board-preview.png)
 
@@ -193,8 +194,8 @@ pnpm dev       # http://localhost:3002
 2. Visit report at `/request/[id]` — sessions, Issues snag list, Meta Spark
    analysis.
 3. Snag list at `/track` — every property's visits and sessions.
-4. View Board from the report — the property's Issues & Bills Tracker
-   Board; move a card through to Paid with Pay now.
+4. View Board from the report — the property's Repair & Wish Bill
+   Tracker; move a card through to Paid with Pay now.
 
 Prefer watching? The [demo video](https://youtu.be/Q40uPN17o5Q) walks the
 same path end to end.
@@ -220,8 +221,8 @@ Check in → Visit report → Track → Board. A video is enough to submit: each
 becomes a session — trade auto-detected, reference issued — grouped under
 its visit on the visit report, with an Issues snag list (or a Wishlist with
 matched stores) and a Meta Spark analysis block. `/track` holds every property's Issues snag list; from the
-report, "View Board" opens the property's magic-link Issues & Bills Tracker
-Board — no account, no password. Uploads stay on the machine under
+report, "View Board" opens the property's magic-link Repair & Wish Bill
+Tracker — no account, no password. Uploads stay on the machine under
 `uploads/`.
 
 ## Magic-link email (optional)
@@ -242,8 +243,8 @@ private full build:
   thumbnail lives in `public/images/`.
 
 Everything user-facing — check-in (repair or wish-to-have), visit reports,
-Issues snag list, Wishlist with matched stores, magic-link Issues & Bills
-Tracker Board through Paid, payments, SAM grounding — runs fully from this
+Issues snag list, Wishlist with matched stores, magic-link Repair & Wish
+Bill Tracker through Paid, payments, SAM grounding — runs fully from this
 branch.
 
 ## Secrets rule
