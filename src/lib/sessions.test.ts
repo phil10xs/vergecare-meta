@@ -3,6 +3,7 @@ import {
   condenseTranscript,
   excerptWords,
   formatBudget,
+  formatIssueWishCounts,
   formatPounds,
   formatVisitDay,
   groupSessionsByPropertyVisit,
@@ -30,6 +31,10 @@ function job(overrides: Partial<Job>): Job {
     requesterContact: null,
     businessName: null,
     propertyAddress: null,
+    propertyType: null,
+    propertyTypeOther: null,
+    checkinType: null,
+    country: null,
     paymentStatus: "none",
     paymentAmount: null,
     notes: null,
@@ -198,5 +203,14 @@ describe("sumCostBands", () => {
   it("formats the visit budget", () => {
     expect(formatBudget({ low: 450, high: 650 })).toBe("£450–£650");
     expect(formatBudget({ low: 80, high: 80 })).toBe("£80");
+  });
+
+  it("counts issues and wishes with singulars", () => {
+    expect(formatIssueWishCounts(3, 0)).toBe("3 issues");
+    expect(formatIssueWishCounts(1, 0)).toBe("1 issue");
+    expect(formatIssueWishCounts(2, 1)).toBe("2 issues · 1 wish");
+    expect(formatIssueWishCounts(1, 2)).toBe("1 issue · 2 wishes");
+    expect(formatIssueWishCounts(0, 2)).toBe("2 wishes");
+    expect(formatIssueWishCounts(0, 1)).toBe("1 wish");
   });
 });

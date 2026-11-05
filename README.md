@@ -1,6 +1,6 @@
 # VergeCare(Beta) — Your AI Property Caretaker
 
-> Film a repair issue, narrate what you see, and get a costed snag list, a matched handyman, and an Issues & Bills Tracker Board in under a minute — every visit remembered.
+> Film a repair issue or a wish-to-have, narrate what you see, and get a costed snag or wish list, a matched handyman or stores, and an Issues & Bills Tracker Board in under a minute — every visit remembered.
 
 [![License: BSL 1.1](https://img.shields.io/badge/license-BSL_1.1-blue)](LICENSE)
 
@@ -24,9 +24,9 @@ Standalone VergeCare demo and eval tracker (Vercel project `result-page-preview`
 
 | Criterion | Where the evidence is |
 |---|---|
-| **Impact** — real-world potential, who benefits, problem fit | Property repairs die in chat threads while damp and disrepair compound. VergeCare turns one filmed check-in into a costed snag list, a matched handyman, and a bills-to-paid board for landlords, homeowners, managers and tenants, with 7 users on the live demo, 10/10 check-ins reaching a snag list, and eval clips from 3 real homes. See [The problem](#the-problem) and [What it does](#what-it-does). |
+| **Impact** — real-world potential, who benefits, problem fit | Property repairs die in chat threads while damp and disrepair compound. VergeCare turns one filmed check-in — a repair issue or a wish-to-have — into a costed snag or wish list, a matched handyman or stores, and a bills-to-paid board for landlords, homeowners, managers and tenants, with 7 users on the live demo, 10/10 check-ins reaching a snag list, and eval clips from 3 real homes. See [The problem](#the-problem) and [What it does](#what-it-does). |
 | **Meta AI tooling** — creative use beyond a basic integration | Two Muse Spark passes per clip (video understanding, then text-only triage reasoning) plus SAM 3.1 damage grounding, all through the Meta Model API — with a deterministic engine underneath so every session is filed even when AI is unavailable. See [Meta AI tooling](#meta-ai-tooling). |
-| **Technical depth** — sound, refined engineering | Next.js 15 + TypeScript, 120 unit tests (19 files, vitest, all passing) plus an automated end-to-end script, typecheck + lint + secrets gates, mobile-first adaptive UI. See [Engineering depth](#engineering-depth) and [Architecture](#architecture). |
+| **Technical depth** — sound, refined engineering | Next.js 15 + TypeScript, 135 unit tests (22 files, vitest, all passing) plus an automated end-to-end script, typecheck + lint + secrets gates, mobile-first adaptive UI. See [Engineering depth](#engineering-depth) and [Architecture](#architecture). |
 | **Demo** — working product, live, video | Live deployment, demo video above, one-command local quickstart that runs with no API keys, and a 5-minute seeded demo path. See [Quickstart](#quickstart) and [Demo in 5 minutes](#demo-in-5-minutes). |
 
 ## The problem
@@ -37,25 +37,28 @@ never gets booked, and the wall gets worse. Bills are chased across the same
 lost threads. Across one home or a whole portfolio, the property itself keeps
 no memory — every visit starts from zero.
 
-VergeCare gives the property a memory. One filmed check-in becomes an
-organized Issues snag list (trade, severity, likely cost on every issue), a
-matched handyman, and an Issues & Bills Tracker Board that follows each fix
-from Requested to Paid. No accounts, no passwords for the people watching a
+VergeCare gives the property a memory. One filmed check-in — a repair issue
+or a wish-to-have — becomes an organized snag or wish list (trade, severity,
+likely cost on every issue; matched stores on every wish), a matched handyman,
+and an Issues & Bills Tracker Board that follows each fix from Requested to
+Paid. No accounts, no passwords for the people watching a
 repair move: the board travels on a magic link.
 
 ## Traction (Nov 2026)
 
 - 7 users on the live demo; 34 check-in videos stored.
 - 10/10 check-in attempts reached a costed snag list.
+- Check-ins cover repairs and wish-to-haves — early users file both.
 - Eval set spans 3 real homes (Derby, London, Texas); names withheld.
 - A property manager on the waiting list.
 
 ## What it does
 
 1. **Check in** — show VergeCare around the property. Film one short clip per
-   issue (≤20 s each) and narrate what you see as you film.
-2. **Get your snag list** — seconds later, every issue is listed with its
-   trade, severity grade and likely UK cost band.
+   issue or wish (≤20 s each) and narrate what you see as you film.
+2. **Get your snag or wish list** — seconds later, every issue is listed with
+   its trade, severity grade and likely UK cost band; every wish with matched
+   local stores.
 3. **Get a matched handyman** — matched by skill, location and price for each
    issue.
 4. **Track it to Paid** — the property's board moves each card Requested → In
@@ -94,7 +97,7 @@ Beyond a basic integration:
 
 ```mermaid
 flowchart LR
-    A[Phone films + narrates<br/>≤20s per issue] --> B["/request/checkin"]
+    A[Phone films + narrates<br/>≤20s per issue or wish] --> B["/request/checkin"]
     B --> C[Server action:<br/>store media + frames]
     C --> D["Muse Spark 1.2<br/>video understanding"]
     D --> E["Muse Spark 1.2<br/>triage reasoning"]
@@ -126,11 +129,13 @@ The Issues & Bills Tracker Board:
 - **Stack:** Next.js 15 + React 19 + TypeScript, Tailwind CSS v4,
   PostgreSQL 16 via Drizzle ORM. Web only, port **3002** (avoids clashing
   with apps on 3000/3001).
-- **120 unit tests, 19 files** (vitest, all passing): payments, board flow,
-  sessions, report sections, media inference, email.
+- **135 unit tests, 22 files** (vitest, all passing): payments, board flow,
+  sessions, report sections, media inference, email, check-in types,
+  country-filtered property types, wishlist directory.
 - **Automated end-to-end:** `pnpm test:e2e` submits a check-in against a
   running server, walks report → snag list → magic-link board, moves a card
-  to Paid, then cleans up.
+  to Paid, submits a wishlist check-in and asserts its stores report,
+  then cleans up.
 - **Golden-clip eval:** `pnpm eval` scores Spark trade/severity accuracy on
   human-labeled clips (see `eval/README.md`).
 - **Gates:** `pnpm typecheck`, `pnpm lint`, `pnpm test`,
@@ -180,8 +185,9 @@ pnpm db:seed   # reset to the 6-check-in mock fixture
 pnpm dev       # http://localhost:3002
 ```
 
-1. Landlord: open `/request`, start a check-in, enter the address, film one
-   ≤20 s video per issue narrating what you see, send.
+1. Landlord: open `/request`, start a check-in, pick repair issue or
+   wish-to-have, enter the address, film one ≤20 s video per issue or wish
+   narrating what you see, send.
 2. Visit report at `/request/[id]` — sessions, Issues snag list, Meta Spark
    analysis.
 3. Snag list at `/track` — every property's visits and sessions.
@@ -210,8 +216,8 @@ test clips live in the demo footage zip
 
 Check in → Visit report → Track → Board. A video is enough to submit: each
 becomes a session — trade auto-detected, reference issued — grouped under
-its visit on the visit report, with an Issues snag list and a Meta Spark
-analysis block. `/track` holds every property's Issues snag list; from the
+its visit on the visit report, with an Issues snag list (or a Wishlist with
+matched stores) and a Meta Spark analysis block. `/track` holds every property's Issues snag list; from the
 report, "View Board" opens the property's magic-link Issues & Bills Tracker
 Board — no account, no password. Uploads stay on the machine under
 `uploads/`.
@@ -233,9 +239,10 @@ private full build:
 - Demo video masters (cinematic cut) are not in git; the README
   thumbnail lives in `public/images/`.
 
-Everything user-facing — check-in, visit reports, Issues snag list,
-magic-link Issues & Bills Tracker Board through Paid, payments, SAM
-grounding — runs fully from this branch.
+Everything user-facing — check-in (repair or wish-to-have), visit reports,
+Issues snag list, Wishlist with matched stores, magic-link Issues & Bills
+Tracker Board through Paid, payments, SAM grounding — runs fully from this
+branch.
 
 ## Secrets rule
 
@@ -258,7 +265,8 @@ pnpm check:secrets    # must pass before every push
 
 Then click through once in the browser (desktop + phone width): land →
 check in with a real clip → confetti report → snag list → View Board →
-moves to Paid with confetti. If the server ever stops responding, restart
+moves to Paid with confetti — then a wish-to-have check-in → wishlist
+report with stores. If the server ever stops responding, restart
 `pnpm dev` (a huge raw gallery upload can wedge it — the in-app recorder
 keeps clips small).
 

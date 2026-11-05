@@ -98,6 +98,19 @@ export function JobAssignmentBadge({ assigned }: { assigned: boolean }) {
   );
 }
 
+export function JobCheckinTypeBadge({
+  checkinType,
+}: {
+  checkinType: string | null;
+}) {
+  const wishlist = checkinType === "wishlist";
+  return (
+    <Badge tone={wishlist ? "info" : "neutral"}>
+      {wishlist ? "Wishlist" : "Repair"}
+    </Badge>
+  );
+}
+
 export function JobSourceBadge({ source }: { source: string }) {
   return (
     <Badge tone={source === "public" ? "info" : "neutral"}>

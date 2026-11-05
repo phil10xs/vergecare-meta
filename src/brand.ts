@@ -4,21 +4,21 @@ export const brand = {
   engine: "your caretaker",
   tagline: "Property care, remembered.",
   description:
-    "Your AI Property Caretaker. Spots repair issues, creates snag lists, finds handymen and keeps costs under control.",
+    "Your AI Property Caretaker. Spots repair issues, creates snag and wish lists, finds handymen and keeps costs under control.",
 } as const;
 
 export const howItWorks = [
   {
-    title: "Check in",
-    body: "Do a video clip for each issue. Narrate as you film",
+    title: "Check in your property",
+    body: "Do a video clip showing and narrating a repair issue eg (weeded garden, moulds on the wall, damped wall, electrical issue, burnt carpet, broken window) or wish-to-have (a couch, a work desk, an electrical appliance, a chandelier)",
   },
   {
-    title: "Get your Issues snag list",
-    body: "Your caretaker lists every issue and its trade.",
+    title: "Get your repair and wish list",
+    body: "Your caretaker gives you a repair or a wishlist tracker board with costed budget, finds matched handymen and stores.",
   },
   {
     title: "Track it all",
-    body: "Your property's issues and bills tracker, until every fix is done.",
+    body: "Your property's repair issues or wishlist until everything is fixed or done.",
   },
 ] as const;
 

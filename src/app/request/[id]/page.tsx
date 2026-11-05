@@ -11,6 +11,7 @@ import {
 import { ReportCelebration } from "@/components/request/report-celebration";
 import { ViewBoardButton } from "@/components/request/view-board-button";
 import { REPORT_SECTIONS } from "@/lib/checklist-template";
+import { wishlistStoresFor } from "@/lib/directory";
 import {
   condenseTranscript,
   excerptWords,
@@ -74,6 +75,10 @@ function visitStatus(sessions: Job[]): string {
   return sessions[0]?.status ?? "requested";
 }
 
+function isWishlistSession(session: Job): boolean {
+  return session.checkinType === "wishlist";
+}
+
 export default async function PublicTrackPage({
   params,
   searchParams,
@@ -85,6 +90,9 @@ export default async function PublicTrackPage({
   const { new: fresh } = await searchParams;
   const anchor = await getPublicJob(id);
   if (!anchor || anchor.source !== "public") notFound();
+  const visitIsWishlist = isWishlistSession(anchor);
+  const unit = visitIsWishlist ? "wish" : "issue";
+  const units = visitIsWishlist ? "wishes" : "issues";
 
   const siblings = anchor.propertyAddress
     ? await db
@@ -169,8 +177,10 @@ export default async function PublicTrackPage({
     <AppShell>
       <ReportCelebration active={fresh === "1"} />
       {fresh === "1" ? (
-        <Notice title={`Analysis complete — Issues snag list ready · ${reference}`}>
-          Your clips are analysed and every issue is listed below. Bookmark
+        <Notice
+          title={`Analysis complete — ${visitIsWishlist ? "Wishlist" : "Issues snag list"} ready · ${reference}`}
+        >
+          Your clips are analysed and every {unit} is listed below. Bookmark
           this page — it is your private receipt.
         </Notice>
       ) : null}
@@ -184,7 +194,7 @@ export default async function PublicTrackPage({
             : undefined
         }
         meta={`${formatVisitDay(day)} · ${sessions.length} ${
-          sessions.length === 1 ? "issue" : "issues"
+          sessions.length === 1 ? unit : units
         }${budget ? ` · budget ${formatBudget(budget)}` : ""}`}
       />
       <div className="mb-6">
@@ -196,8 +206,8 @@ export default async function PublicTrackPage({
           <div className="overflow-hidden rounded-2xl border border-border bg-card">
             <div className="border-b border-border px-4 py-4">
               <h2 className="font-display text-base font-bold tracking-tight">
-                Issues snag list · {views.length}{" "}
-                {views.length === 1 ? "issue" : "issues"}
+                {visitIsWishlist ? "Wishlist" : "Issues snag list"} ·{" "}
+                {views.length} {views.length === 1 ? unit : units}
               </h2>
               <div className="mt-3">
                 <ViewBoardButton
@@ -259,7 +269,7 @@ export default async function PublicTrackPage({
             className="group overflow-hidden rounded-2xl border border-border bg-card"
           >
             <summary
-              aria-label={`Issue ${index + 1}: ${view.session.title}`}
+              aria-label={`${isWishlistSession(view.session) ? "Wish" : "Issue"} ${index + 1}: ${view.session.title}`}
               className="flex cursor-pointer list-none items-start gap-3 p-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring [&::-webkit-details-marker]:hidden"
             >
               <ChevronDown
@@ -268,7 +278,8 @@ export default async function PublicTrackPage({
               />
               <span className="min-w-0 flex-1">
                 <span className="block text-sm font-semibold text-muted-foreground">
-                  Issue {index + 1} of {views.length}
+                  {isWishlistSession(view.session) ? "Wish" : "Issue"}{" "}
+                  {index + 1} of {views.length}
                 </span>
                 <span className="mt-0.5 block font-display text-base font-bold tracking-tight break-words">
                   {view.session.title}
@@ -288,7 +299,9 @@ export default async function PublicTrackPage({
                 <dd className="min-w-0 break-words">
                   {view.session.tradesmanTrade ?? "Detecting…"}
                 </dd>
-                <dt className="font-semibold text-muted-foreground">Issue</dt>
+                <dt className="font-semibold text-muted-foreground">
+                  {isWishlistSession(view.session) ? "Wish" : "Issue"}
+                </dt>
                 <dd className="min-w-0 font-semibold leading-relaxed break-words">
                   {view.name}
                 </dd>
@@ -310,6 +323,21 @@ export default async function PublicTrackPage({
                     <dd className="break-words">{view.session.costBand}</dd>
                   </>
                 ) : null}
+                <>
+                  <dt className="font-semibold text-muted-foreground">
+                    Get it done
+                  </dt>
+                  <dd className="min-w-0 break-words">
+                    {isWishlistSession(view.session)
+                      ? wishlistStoresFor(
+                          view.session.country,
+                          view.session.propertyType,
+                        ).join(" · ")
+                      : (view.session.tradesmanName ??
+                        view.session.assignee ??
+                        "Your caretaker matches your handyman.")}
+                  </dd>
+                </>
                 {view.heard.length > 0 ? (
                   <>
                     <dt className="font-semibold text-muted-foreground">Heard</dt>

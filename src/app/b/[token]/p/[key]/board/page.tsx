@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { AppShell } from "@/components/layout/app-shell";
 import { Notice, PageHeader } from "@/components/layout/page-header";
+import { EngineSearchMark } from "@/components/track/engine-search-mark";
 import { ExpiredBoardLink } from "@/components/track/expired-link";
 import { TrackBoard } from "@/components/track/track-board";
 import { landlordPath, propertySnagPath } from "@/lib/app-url";
@@ -49,6 +50,7 @@ export default async function PropertyBoardPage({
         meta={`${loaded.jobs.length} ${loaded.jobs.length === 1 ? "issue" : "issues"}`}
         backHref={propertySnagPath(token, loaded.address)}
         backLabel="Snag list"
+        mark={<EngineSearchMark />}
         actions={
           <Link href={landlordPath(token)} className="flex w-full">
             <Button variant="outline" className="w-full">

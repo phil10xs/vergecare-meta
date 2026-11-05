@@ -1,7 +1,12 @@
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { JobPaymentBadge, JobPriorityBadge } from "@/components/ui/status-badge";
+import {
+  JobCheckinTypeBadge,
+  JobPaymentBadge,
+  JobPriorityBadge,
+} from "@/components/ui/status-badge";
+import { wishlistStoresFor } from "@/lib/directory";
 import {
   markPaidAction,
   moveBoardIssueAction,
@@ -91,6 +96,7 @@ export function TrackBoard({
                         status={card.paymentStatus}
                         amountPence={card.paymentAmount}
                       />
+                      <JobCheckinTypeBadge checkinType={card.checkinType} />
                     </div>
                     <dl className="mt-3 space-y-1.5 text-sm">
                       <div className="flex items-start justify-between gap-3">
@@ -99,6 +105,17 @@ export function TrackBoard({
                           {card.tradesmanTrade ?? "Detecting…"}
                         </dd>
                       </div>
+                      {card.checkinType === "wishlist" ? (
+                        <div className="flex items-start justify-between gap-3">
+                          <dt className="text-muted-foreground">Get it done</dt>
+                          <dd className="min-w-0 text-right font-medium break-words">
+                            {wishlistStoresFor(
+                              card.country,
+                              card.propertyType,
+                            ).join(" · ")}
+                          </dd>
+                        </div>
+                      ) : null}
                       {card.costBand ? (
                         <div className="flex items-start justify-between gap-3">
                           <dt className="text-muted-foreground">Likely cost</dt>

@@ -11,6 +11,7 @@ export function PageHeader({
   actions,
   backHref,
   backLabel = "Back",
+  mark,
 }: {
   eyebrow?: string;
   title: ReactNode;
@@ -19,17 +20,26 @@ export function PageHeader({
   actions?: ReactNode;
   backHref?: string;
   backLabel?: string;
+  /** Optional mark pinned to the right of the back-link row. */
+  mark?: ReactNode;
 }) {
   return (
     <div className="mb-6 sm:mb-8">
-      {backHref ? (
-        <Link
-          href={backHref}
-          className="mb-3 inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-link hover:underline"
-        >
-          <ArrowLeft className="h-4 w-4" aria-hidden />
-          {backLabel}
-        </Link>
+      {backHref || mark ? (
+        <div className="mb-3 flex items-center justify-between gap-3">
+          {backHref ? (
+            <Link
+              href={backHref}
+              className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-link hover:underline"
+            >
+              <ArrowLeft className="h-4 w-4" aria-hidden />
+              {backLabel}
+            </Link>
+          ) : (
+            <span />
+          )}
+          {mark ?? null}
+        </div>
       ) : null}
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0 max-w-3xl flex-1">

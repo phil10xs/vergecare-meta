@@ -10,6 +10,13 @@ const STEPS = [
   "Building your report, Issues snag list & Bills Tracker",
 ];
 
+const WISHLIST_STEPS = [
+  "Uploading your videos",
+  "Listening to what you filmed",
+  "Detecting the trade",
+  "Building your report and wishlist",
+];
+
 const STEP_MS = 2800;
 
 /**
@@ -20,17 +27,20 @@ const STEP_MS = 2800;
 export function CheckinProgress({
   heading = "Check-in submitted",
   onCancel,
+  checkinType = "repair",
 }: {
   heading?: string;
   onCancel?: () => void;
+  checkinType?: "repair" | "wishlist";
 }) {
+  const steps = checkinType === "wishlist" ? WISHLIST_STEPS : STEPS;
   const [step, setStep] = React.useState(0);
   const [elapsed, setElapsed] = React.useState(0);
   const [slow, setSlow] = React.useState(false);
 
   React.useEffect(() => {
     const timer = setInterval(() => {
-      setStep((current) => Math.min(current + 1, STEPS.length - 1));
+      setStep((current) => Math.min(current + 1, steps.length - 1));
     }, STEP_MS);
     const clock = setInterval(() => {
       setElapsed((seconds) => seconds + 1);
@@ -41,7 +51,7 @@ export function CheckinProgress({
       clearInterval(clock);
       clearTimeout(slowTimer);
     };
-  }, []);
+  }, [steps.length]);
 
   const stamped = `${Math.floor(elapsed / 60)}:${String(elapsed % 60).padStart(2, "0")}`;
 
@@ -61,11 +71,12 @@ export function CheckinProgress({
           {heading}
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Your caretaker is building your property&apos;s Issues snag list
-          &amp; Bills Tracker.
+          {checkinType === "wishlist"
+            ? "Your caretaker is building your property's wishlist."
+            : "Your caretaker is building your property's Issues snag list & Bills Tracker."}
         </p>
         <ol className="mt-6 space-y-3 text-left">
-          {STEPS.map((label, index) => {
+          {steps.map((label, index) => {
             const done = index < step;
             const active = index === step;
             return (

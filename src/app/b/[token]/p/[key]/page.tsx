@@ -3,9 +3,17 @@ import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import { ViewBoardButton } from "@/components/request/view-board-button";
 import { ExpiredBoardLink } from "@/components/track/expired-link";
-import { JobStatusBadge } from "@/components/ui/status-badge";
+import {
+  JobCheckinTypeBadge,
+  JobStatusBadge,
+} from "@/components/ui/status-badge";
 import { landlordPath } from "@/lib/app-url";
-import { formatVisitDay, groupSessionsByPropertyVisit } from "@/lib/sessions";
+import { wishlistStoresFor } from "@/lib/directory";
+import {
+  formatIssueWishCounts,
+  formatVisitDay,
+  groupSessionsByPropertyVisit,
+} from "@/lib/sessions";
 import { snagListDescription } from "@/lib/view-board";
 import {
   landlordLinkEmailed,
@@ -37,6 +45,9 @@ export default async function PropertySnagPage({
   }
 
   const groups = groupSessionsByPropertyVisit(loaded.jobs);
+  const wishCount = loaded.jobs.filter(
+    (job) => job.checkinType === "wishlist",
+  ).length;
   const anchor = loaded.jobs[0];
   const linkAlreadySent = await landlordLinkEmailed(loaded.email);
 
@@ -45,7 +56,7 @@ export default async function PropertySnagPage({
       <PageHeader
         title={loaded.address}
         description={snagListDescription(linkAlreadySent)}
-        meta={`${loaded.jobs.length} ${loaded.jobs.length === 1 ? "issue" : "issues"}`}
+        meta={formatIssueWishCounts(loaded.jobs.length - wishCount, wishCount)}
         backHref={landlordPath(token)}
         backLabel="My properties"
         actions={
@@ -76,8 +87,20 @@ export default async function PropertySnagPage({
                       <span className="mt-0.5 block text-sm text-muted-foreground">
                         {session.tradesmanTrade ?? "Trade detecting…"}
                       </span>
+                      {session.checkinType === "wishlist" ? (
+                        <span className="mt-0.5 block text-sm text-muted-foreground">
+                          Get it done:{" "}
+                          {wishlistStoresFor(
+                            session.country,
+                            session.propertyType,
+                          ).join(" · ")}
+                        </span>
+                      ) : null}
                     </span>
-                    <JobStatusBadge status={session.status} />
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <JobStatusBadge status={session.status} />
+                      <JobCheckinTypeBadge checkinType={session.checkinType} />
+                    </div>
                   </li>
                 ))}
               </ul>

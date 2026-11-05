@@ -44,8 +44,8 @@ const STEPS = [
   },
   {
     number: "02",
-    title: "Get your snag list",
-    body: "VergeCare spots the repair issues and organises everything that needs fixing.",
+    title: "Get your snag or wish list",
+    body: "VergeCare spots the repair issues or wishes and organises everything into one list.",
   },
   {
     number: "03",
@@ -64,7 +64,7 @@ const FEATURES = [
     title: "Property Care",
     items: [
       "AI-powered property check-ins.",
-      "Snag lists and maintenance tracking.",
+      "Snag and wish lists, tracked to done.",
       "Property history.",
     ],
   },
@@ -157,8 +157,8 @@ export default function PublicRequestPage() {
             See VergeCare in action.
           </h2>
           <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground">
-            From spotting repair issues to finding the right handyman, see how
-            VergeCare helps you look after your property.
+            From spotting repair issues and wishes to finding the right
+            handyman, see how VergeCare helps you look after your property.
           </p>
           <div className="mt-8 overflow-hidden rounded-2xl border border-border bg-[#071617]">
             <iframe
@@ -228,7 +228,7 @@ export default function PublicRequestPage() {
               Your property, on one board
             </h3>
             <p className="mt-2 max-w-2xl text-base leading-relaxed text-muted-foreground">
-              Follow each repair, and every bill, until it&apos;s paid.
+              Follow each repair or wish, and every bill, until it&apos;s done.
             </p>
             <BoardPreview />
           </div>

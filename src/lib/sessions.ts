@@ -258,3 +258,18 @@ export function formatBudget(total: BudgetTotal): string {
 export function formatPounds(pence: number): string {
   return `£${(pence / 100).toFixed(pence % 100 === 0 ? 0 : 2)}`;
 }
+
+/**
+ * "3 issues", "2 issues · 1 wish", "1 wish". The wish part shows only
+ * when at least one wish is present, so repair-only lists read as before.
+ */
+export function formatIssueWishCounts(
+  issueCount: number,
+  wishCount: number,
+): string {
+  const issues = `${issueCount} ${issueCount === 1 ? "issue" : "issues"}`;
+  if (wishCount <= 0) return issues;
+  const wishes = `${wishCount} ${wishCount === 1 ? "wish" : "wishes"}`;
+  if (issueCount <= 0) return wishes;
+  return `${issues} · ${wishes}`;
+}

@@ -79,8 +79,8 @@ export function CaretakerHero({
               Your AI Property Caretaker.
             </h1>
             <p className="mt-4 max-w-2xl font-display text-lg font-bold leading-snug tracking-[-0.03em] text-white sm:text-xl lg:text-[1.65rem]">
-              Spots repair issues. Creates snag lists. Finds handymen. Keeps costs
-              under control.
+              Spots repair issues. Creates snag and wish lists. Finds handymen.
+              Keeps costs under control.
             </p>
             <p className="mt-3 max-w-2xl text-sm font-semibold leading-relaxed text-[var(--gv-signal)] sm:text-base">
               VergeCare gets things sorted.

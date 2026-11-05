@@ -6,7 +6,10 @@ import { EmptyState, PageHeader } from "@/components/layout/page-header";
 import { ExpiredBoardLink } from "@/components/track/expired-link";
 import { Button } from "@/components/ui/button";
 import { propertyBoardPath, propertySnagPath } from "@/lib/app-url";
-import { groupSessionsByPropertyVisit } from "@/lib/sessions";
+import {
+  formatIssueWishCounts,
+  groupSessionsByPropertyVisit,
+} from "@/lib/sessions";
 import { getLandlordAccess } from "@/server/board-access";
 
 export const dynamic = "force-dynamic";
@@ -27,7 +30,7 @@ export default async function MyPropertiesPage({
     <AppShell>
       <PageHeader
         title="My properties"
-        description="Every property on this link. Open a snag list or board to move issues. No password."
+        description="Every property on this link. Open a snag list or board to move issues and wishes. No password."
         meta={`${groups.length} ${groups.length === 1 ? "property" : "properties"}`}
         actions={
           <Link href="/request" className="flex w-full">
@@ -53,6 +56,9 @@ export default async function MyPropertiesPage({
                 session.status !== "paid" &&
                 session.status !== "cancelled",
             ).length;
+            const wishCount = sessions.filter(
+              (session) => session.checkinType === "wishlist",
+            ).length;
             const lastVisit = group.visits[0]?.label ?? "No visits yet";
             return (
               <li key={group.address} className="min-w-0">
@@ -64,9 +70,11 @@ export default async function MyPropertiesPage({
                         {group.address}
                       </span>
                       <span className="mt-0.5 block text-sm text-muted-foreground">
-                        {group.sessionCount}{" "}
-                        {group.sessionCount === 1 ? "issue" : "issues"} ·{" "}
-                        {openCount} open · Last visit {lastVisit}
+                        {formatIssueWishCounts(
+                          group.sessionCount - wishCount,
+                          wishCount,
+                        )}{" "}
+                        · {openCount} open · Last visit {lastVisit}
                       </span>
                     </span>
                   </div>

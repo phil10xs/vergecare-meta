@@ -26,6 +26,11 @@ import { parsePoundsToPence } from "@/lib/payments";
 import { sessionAddress } from "@/lib/sessions";
 import { groupFilesBySession } from "@/lib/media-rules";
 import { TRADE_OPTIONS } from "@/lib/chat-parse";
+import { parseCheckinType } from "@/lib/checkin-type";
+import {
+  parseCountry,
+  propertyTypesFromCheckin,
+} from "@/lib/property-types";
 import { analyzeVideo, assessIssue } from "@/server/analyze-video";
 import { conceptFromAnalysis, localizeIssue } from "@/server/sam";
 import { saveUpload } from "@/server/media-store";
@@ -150,12 +155,20 @@ export async function createPublicRequestAction(
     videos.map((file, index) => [file, frameByIndex.get(index)]),
   );
   const groups = groupFilesBySession(files);
+  const propertyTypes = propertyTypesFromCheckin({
+    propertyType: formText(formData, "propertyType"),
+    propertyTypeOther: formText(formData, "propertyTypeOther"),
+  });
   const base = {
     requesterName: null,
     requesterContact: null,
     businessName: null,
     propertyAddress,
+    propertyType: propertyTypes.propertyType,
+    propertyTypeOther: propertyTypes.propertyTypeOther,
     priority,
+    checkinType: parseCheckinType(formText(formData, "checkinType")),
+    country: parseCountry(formText(formData, "country")),
   };
   const created = await createPublicRequest({
     ...base,

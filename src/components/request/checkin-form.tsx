@@ -21,6 +21,9 @@ export function CheckinForm({
 }) {
   const [submitted, setSubmitted] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const [checkinType, setCheckinType] = React.useState<"repair" | "wishlist">(
+    "repair",
+  );
 
   React.useEffect(() => {
     try {
@@ -43,6 +46,12 @@ export function CheckinForm({
       return;
     }
     setError(null);
+    const kind = form.elements.namedItem("checkinType");
+    setCheckinType(
+      kind instanceof RadioNodeList && kind.value === "wishlist"
+        ? "wishlist"
+        : "repair",
+    );
     try {
       sessionStorage.setItem(CHECKIN_SUBMITTED_KEY, "1");
     } catch {
@@ -72,7 +81,9 @@ export function CheckinForm({
           {error}
         </p>
       ) : null}
-      {submitted ? <CheckinProgress onCancel={handleCancel} /> : null}
+      {submitted ? (
+        <CheckinProgress onCancel={handleCancel} checkinType={checkinType} />
+      ) : null}
     </form>
   );
 }

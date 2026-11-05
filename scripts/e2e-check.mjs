@@ -30,6 +30,7 @@ import postgres from "postgres";
 
 const BASE = process.env.BASE_URL ?? "http://localhost:3002";
 const ADDRESS = `E2E Test ${Date.now()} Lane, Manchester`;
+const WISH_ADDRESS = `E2E Wish ${Date.now()} Lane, Manchester`;
 const EMAIL = `e2e-${Date.now()}@example.com`;
 const ROOT = new URL("..", import.meta.url).pathname;
 const VIDEO_PATH = process.env.VIDEO_PATH?.trim() || null;
@@ -266,14 +267,50 @@ try {
     `HTTP ${paid.status}`,
   );
 
+  // 5. Wishlist check-in: note-only, no media. Report shows the wish
+  // list with matched stores instead of a handyman line.
+  const wishForm = await get("/request/checkin");
+  check(
+    "check-in offers repair or wish",
+    wishForm.text.includes('name="checkinType"') &&
+      wishForm.text.includes('name="country"'),
+  );
+  const wishSubmitted = await postForm(
+    "/request/checkin",
+    {
+      propertyAddress: WISH_ADDRESS,
+      checkinType: "wishlist",
+      country: "United Kingdom",
+      propertyType: "United Kingdom: Flat",
+      note: "A velvet couch for the lounge",
+    },
+    actionId(wishForm.text),
+  );
+  check(
+    "wishlist submit redirects to report",
+    wishSubmitted.status === 303 &&
+      !!wishSubmitted.location?.includes("/request/"),
+    `HTTP ${wishSubmitted.status} → ${wishSubmitted.location}`,
+  );
+  const wishReportPath = new URL(wishSubmitted.location, BASE).pathname;
+  const wishReport = await get(wishReportPath);
+  check(
+    "report shows Wishlist with stores",
+    wishReport.status === 200 &&
+      wishReport.text.includes("Wishlist") &&
+      wishReport.text.includes("Get it done") &&
+      wishReport.text.includes("Argos"),
+    `HTTP ${wishReport.status}`,
+  );
+
   console.log("e2e: all checks passed");
 } finally {
   // Cleanup: remove test rows (media/reports/tokens cascade) and upload folders.
-  const rows = await sql`SELECT id FROM job WHERE property_address = ${ADDRESS}`;
+  const rows = await sql`SELECT id FROM job WHERE property_address = ${ADDRESS} OR property_address = ${WISH_ADDRESS}`;
   for (const row of rows) {
     rmSync(join(ROOT, "uploads", row.id), { recursive: true, force: true });
   }
-  await sql`DELETE FROM job WHERE property_address = ${ADDRESS}`;
+  await sql`DELETE FROM job WHERE property_address = ${ADDRESS} OR property_address = ${WISH_ADDRESS}`;
   await sql`DELETE FROM board_token WHERE email = ${EMAIL}`;
   console.log(`e2e: cleaned up ${rows.length} test job(s)`);
   await sql.end();

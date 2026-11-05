@@ -8,6 +8,12 @@ import {
   type Job,
   type SiteReport,
 } from "@/db/schema";
+import {
+  ensureCheckinTypeColumn,
+  ensureCountryColumn,
+  ensurePropertyTypeColumns,
+} from "@/server/job-columns";
+import type { CheckinType } from "@/lib/checkin-type";
 import { asc, desc, eq } from "drizzle-orm";
 import {
   CHECKLIST_TEMPLATE,
@@ -122,13 +128,20 @@ export interface PublicRequestInput {
   requesterContact?: string | null;
   businessName?: string | null;
   propertyAddress: string;
+  propertyType?: string | null;
+  propertyTypeOther?: string | null;
   priority: "low" | "medium" | "high";
   description: string;
+  checkinType?: CheckinType | null;
+  country?: string | null;
 }
 
 export async function createPublicRequest(
   input: PublicRequestInput,
 ): Promise<Job> {
+  await ensurePropertyTypeColumns();
+  await ensureCheckinTypeColumn();
+  await ensureCountryColumn();
   const shortAddress =
     input.propertyAddress.split(",")[0]?.trim() || input.propertyAddress;
   const [row] = await db
@@ -144,6 +157,10 @@ export async function createPublicRequest(
       requesterContact: input.requesterContact ?? null,
       businessName: input.businessName ?? null,
       propertyAddress: input.propertyAddress,
+      propertyType: input.propertyType ?? null,
+      propertyTypeOther: input.propertyTypeOther ?? null,
+      checkinType: input.checkinType ?? "repair",
+      country: input.country ?? null,
       notes: input.description,
     })
     .returning();

@@ -26,7 +26,7 @@ Evidence: `src/server/analyze-video.ts`, `src/server/sam.ts`,
 
 ## Tech depth 20% — strong
 
-120 tests green, CI, typed contracts, null-safe AI stages, deterministic
+135 tests green, CI, typed contracts, null-safe AI stages, deterministic
 fallbacks, and a 4-run eval history with exclusions listed. The run
 history alone puts this above 90% of hackathon repos.
 
