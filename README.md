@@ -24,7 +24,7 @@ Standalone VergeCare demo and eval tracker (Vercel project `result-page-preview`
 
 | Criterion | Where the evidence is |
 |---|---|
-| **Impact** — real-world potential, who benefits, problem fit | Property repairs die in chat threads while damp and disrepair compound. VergeCare turns one filmed check-in — a repair issue or a wish-to-have — into a costed snag or wish list, a matched handyman or stores, and a bills-to-paid board for landlords, homeowners, managers and tenants, with 7 users on the live demo, 10/10 check-ins reaching a snag list, and eval clips from 3 real homes. See [The problem](#the-problem) and [What it does](#what-it-does). |
+| **Impact** — real-world potential, who benefits, problem fit | Property repairs die in chat threads while damp and disrepair compound — and wishes never get recorded at all. VergeCare turns one filmed check-in — a repair issue or a wish-to-have — into a costed snag or wish list, a matched handyman or stores, and a bills-to-paid board for landlords, homeowners, managers and tenants, with 7 users on the live demo, 10/10 check-ins reaching a snag list, and eval clips from 3 real homes. See [The problem](#the-problem) and [What it does](#what-it-does). |
 | **Meta AI tooling** — creative use beyond a basic integration | Two Muse Spark passes per clip (video understanding, then text-only triage reasoning) plus SAM 3.1 damage grounding, all through the Meta Model API — with a deterministic engine underneath so every session is filed even when AI is unavailable. See [Meta AI tooling](#meta-ai-tooling). |
 | **Technical depth** — sound, refined engineering | Next.js 15 + TypeScript, 135 unit tests (22 files, vitest, all passing) plus an automated end-to-end script, typecheck + lint + secrets gates, mobile-first adaptive UI. See [Engineering depth](#engineering-depth) and [Architecture](#architecture). |
 | **Demo** — working product, live, video | Live deployment, demo video above, one-command local quickstart that runs with no API keys, and a 5-minute seeded demo path. See [Quickstart](#quickstart) and [Demo in 5 minutes](#demo-in-5-minutes). |
@@ -34,15 +34,17 @@ Standalone VergeCare demo and eval tracker (Vercel project `result-page-preview`
 Landlords, homeowners, property managers and tenants all lose repair issues the
 same way: a tenant films damp on WhatsApp, the clip scrolls away, the plumber
 never gets booked, and the wall gets worse. Bills are chased across the same
-lost threads. Across one home or a whole portfolio, the property itself keeps
-no memory — every visit starts from zero.
+lost threads. Wish-to-haves never even make it that far — the couch, the
+chandelier, the work desk stay as passing remarks. Across one home or a
+whole portfolio, the property itself keeps no memory — every visit starts
+from zero.
 
 VergeCare gives the property a memory. One filmed check-in — a repair issue
 or a wish-to-have — becomes an organized snag or wish list (trade, severity,
 likely cost on every issue; matched stores on every wish), a matched handyman,
-and an Issues & Bills Tracker Board that follows each fix from Requested to
-Paid. No accounts, no passwords for the people watching a
-repair move: the board travels on a magic link.
+and an Issues & Bills Tracker Board that follows each fix or wish from
+Requested to Paid. No accounts, no passwords for the people watching a
+repair or wish move: the board travels on a magic link.
 
 ## Traction (Nov 2026)
 
